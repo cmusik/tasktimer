@@ -23,6 +23,7 @@ class JobModel : public QAbstractTableModel {
 		int rowCount(const QModelIndex&) const;
 		int columnCount(const QModelIndex&) const;
 		QVariant data(const QModelIndex&, int) const;
+		QVariant headerData (int, Qt::Orientation, int) const;
 		Qt::ItemFlags flags(const QModelIndex&) const;
 };
 

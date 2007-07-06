@@ -12,7 +12,6 @@ JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
 	Job *j2 = new Job(this, "job2");
 
 	j1->start();
-	sleep(1);
 	j2->start();
 
 	j1->stop();
@@ -54,13 +53,30 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 }
 
 void JobModel::start(const QModelIndex& index) {
-	qDebug() << "start job";
 	jobs->at(index.row())->start();
 }
 
 void JobModel::stop(const QModelIndex& index) {
-	qDebug() << "stop job";
 	jobs->at(index.row())->stop();
+}
+
+QVariant JobModel::headerData (int section, Qt::Orientation orientation, int role) const {
+	if (role != Qt::DisplayRole)
+		return QVariant();
+
+	if (orientation == Qt::Horizontal) {
+		switch(section) {
+			case 0:
+				return QString("Name");
+			case 1:
+				return QString("Time");
+		}
+	}
+	else {
+		return section+1;
+	}
+
+	return QVariant();
 }
 
 Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {

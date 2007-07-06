@@ -20,8 +20,11 @@ class Job : public QObject {
 		uint duration();
 
 	private:
-		QStack<JobTime*> *progress;
+		uint calculateElapsedTime();
+
+		uint elapsedTime;
 		QString name;
+		QDateTime *started;
 };
 
 #endif
