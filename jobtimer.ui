@@ -5,30 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>652</width>
-    <height>495</height>
+    <width>598</width>
+    <height>394</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>JobTimer</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QHBoxLayout" >
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>9</number>
-    </property>
+   <layout class="QVBoxLayout" >
     <item>
      <widget class="QTableView" name="jobTable" >
       <property name="selectionBehavior" >
@@ -43,7 +28,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>652</width>
+     <width>598</width>
      <height>27</height>
     </rect>
    </property>

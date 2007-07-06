@@ -1,6 +1,7 @@
 #include <QVariant>
 #include <QDebug>
 #include <unistd.h>
+#include <QTimer>
 #include "JobModel.h"
 #include "Job.h"
 
@@ -19,6 +20,15 @@ JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
 
 	jobs->append(j1);
 	jobs->append(j2);
+
+	QTimer *timer = new QTimer(this);
+	timer->setInterval(1000);
+	connect(timer, SIGNAL(timeout()), this, SLOT(updateData()));
+	timer->start();
+}
+
+void JobModel::updateData() {
+	emit dataChanged(index(0, 0), index(0, jobs->count()));
 }
 
 int JobModel::rowCount(const QModelIndex&) const {
@@ -29,9 +39,15 @@ int JobModel::columnCount(const QModelIndex&) const {
 	return 2;
 }
 
-QVariant JobModel::data(const QModelIndex& index, int) const {
+QVariant JobModel::data(const QModelIndex& index, int role) const {
+	if (role != Qt::DisplayRole)
+		return QVariant();
+
+	if (!index.isValid())
+		return QVariant();
+
 	if (index.column() == 0)
-		return QVariant(jobs->at(index.row())->getName());
+		return jobs->at(index.row())->getName();
 	else
 		return jobs->at(index.row())->duration();
 
@@ -45,4 +61,11 @@ void JobModel::start(const QModelIndex& index) {
 void JobModel::stop(const QModelIndex& index) {
 	qDebug() << "stop job";
 	jobs->at(index.row())->stop();
+}
+
+Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {
+	if (!index.isValid())
+		return NULL;
+
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
