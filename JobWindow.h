@@ -11,6 +11,7 @@ class JobWindow : public QMainWindow, private Ui::JobWindow {
 	private slots:
 		void startJob();
 		void stopJob();
+		void addJob();
 
 	private:
 		JobModel *jobData;

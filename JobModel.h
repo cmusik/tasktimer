@@ -15,6 +15,7 @@ class JobModel : public QAbstractTableModel {
 
 		void start(const QModelIndex&);
 		void stop(const QModelIndex&);
+		bool insertRows(int, int, const QModelIndex& = QModelIndex());
 
 	private slots:
 		void updateData();
@@ -25,6 +26,7 @@ class JobModel : public QAbstractTableModel {
 		QVariant data(const QModelIndex&, int) const;
 		QVariant headerData (int, Qt::Orientation, int) const;
 		Qt::ItemFlags flags(const QModelIndex&) const;
+		bool setData(const QModelIndex&, const QVariant&, int = Qt::EditRole);
 };
 
 #endif

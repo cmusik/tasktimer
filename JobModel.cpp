@@ -27,7 +27,7 @@ JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
 }
 
 void JobModel::updateData() {
-	emit dataChanged(index(0, 0), index(0, jobs->count()));
+	emit dataChanged(createIndex(1, 0), createIndex(1, jobs->count()));
 }
 
 int JobModel::rowCount(const QModelIndex&) const {
@@ -83,5 +83,26 @@ Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {
 	if (!index.isValid())
 		return NULL;
 
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+}
+
+bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+	if (!index.isValid())
+		return false;
+	if (index.column() != 0)
+		return false;
+
+	jobs->at(index.row())->setName(value.toString());
+	return true;
+}
+
+bool JobModel::insertRows(int, int count, const QModelIndex&) {
+	qDebug() <<  jobs->count() << jobs->count()+count-1;
+	beginInsertRows(QModelIndex(), jobs->count(), jobs->count()+count-1);
+
+	for (int i = 0; i < count; ++i)
+		jobs->append(new Job(this, QString()));
+
+	endInsertRows();
+	return true;
 }

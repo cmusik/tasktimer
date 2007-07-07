@@ -17,6 +17,7 @@ class Job : public QObject {
 		void stop();
 		void output();
 		QString getName();
+		void setName(QString);
 		uint duration();
 
 	private:

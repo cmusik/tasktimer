@@ -25,6 +25,10 @@ QString Job::getName() {
 	return name;
 }
 
+void Job::setName(QString n) {
+	name = n;
+}
+
 uint Job::calculateElapsedTime() {
 	uint e = 0;
 
