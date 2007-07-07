@@ -3,6 +3,7 @@
 #include <QHeaderView>
 #include <QItemSelectionModel>
 #include <QCloseEvent>
+#include <QMessageBox>
 #include "JobWindow.h"
 #include "JobEdit.h"
 
@@ -18,11 +19,12 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionStop, SIGNAL(activated()), this, SLOT(stopJob()));
 	connect(actionNew, SIGNAL(activated()), this, SLOT(addJob()));
 	connect(actionRemove, SIGNAL(activated()), this, SLOT(removeJob()));
-	connect(actionSave, SIGNAL(activated()), jobData, SLOT(save()));
 
 	jobTable->setSelectionModel(new QItemSelectionModel(jobData));
-	jobTable->resizeColumnToContents(1);
-	jobTable->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+	jobTable->resizeColumnToContents(Counter);
+	jobTable->resizeColumnToContents(Time);
+	jobTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
+	jobTable->verticalHeader()->hide();
 
 	show();
 }
@@ -42,7 +44,9 @@ void JobWindow::addJob() {
 		pos = selected.at(0).row();
 
 	jobData->insertRows(pos, 1);
-	jobTable->update();
+
+	jobTable->resizeColumnToContents(Counter);
+	jobTable->resizeColumnToContents(Time);
 }
 
 void JobWindow::removeJob() {
@@ -56,6 +60,17 @@ void JobWindow::removeJob() {
 }
 
 void JobWindow::closeEvent(QCloseEvent *event) {
+	if (jobData->hasActive()) {
+		QMessageBox::StandardButton ret;
+		ret = QMessageBox::warning(this, tr("Application"),
+				tr("There are running jobs. Do you want to save and quit?"),
+				QMessageBox::Yes | QMessageBox::No);
+
+		if (ret != QMessageBox::Yes) {
+			event->ignore();
+			return;
+		}
+	}
 	jobData->save();
 	event->accept();
 }

@@ -15,6 +15,8 @@ class JobEdit : public QItemDelegate {
 		void setModelData(QWidget*, QAbstractItemModel*, const QModelIndex&) const;
 
 		void updateEditorGeometry(QWidget*, const QStyleOptionViewItem&, const QModelIndex &) const;
+		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
 
 };
 

@@ -49,3 +49,10 @@ uint Job::duration() {
 void Job::setElapsed(uint t) {
 	elapsedTime = t;
 }
+
+bool Job::isStarted() {
+	if (started != NULL)
+		return true;
+
+	return false;
+}

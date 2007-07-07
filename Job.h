@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QStack>
 #include <QString>
-
-#include "JobTime.h"
+#include <QDateTime>
 
 class Job : public QObject {
 	Q_OBJECT
@@ -20,6 +19,7 @@ class Job : public QObject {
 		void setName(QString);
 		uint duration();
 		void setElapsed(uint);
+		bool isStarted();
 
 	private:
 		uint calculateElapsedTime();

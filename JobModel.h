@@ -5,6 +5,12 @@
 #include <QAbstractTableModel>
 #include "Job.h"
 
+enum {
+	Counter = 0,
+	Name = 1,
+	Time = 2
+};
+
 class JobModel : public QAbstractTableModel {
 	Q_OBJECT
 
@@ -17,6 +23,7 @@ class JobModel : public QAbstractTableModel {
 		void stop(const QModelIndex&);
 		bool insertRows(int, int, const QModelIndex& = QModelIndex());
 		bool removeRows(int, int, const QModelIndex& = QModelIndex());
+		bool hasActive();
 
 	public slots:
 		void save();

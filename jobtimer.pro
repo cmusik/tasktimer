@@ -8,6 +8,6 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += Job.h JobTime.h JobWindow.h JobModel.h JobEdit.h
+HEADERS += Job.h JobWindow.h JobModel.h JobEdit.h
 FORMS += jobtimer.ui
-SOURCES += main.cpp Job.cpp JobTime.cpp JobWindow.cpp JobModel.cpp JobEdit.cpp
+SOURCES += main.cpp Job.cpp JobWindow.cpp JobModel.cpp JobEdit.cpp
