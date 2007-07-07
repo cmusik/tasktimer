@@ -16,6 +16,11 @@ class JobModel : public QAbstractTableModel {
 		void start(const QModelIndex&);
 		void stop(const QModelIndex&);
 		bool insertRows(int, int, const QModelIndex& = QModelIndex());
+		bool removeRows(int, int, const QModelIndex& = QModelIndex());
+
+	public slots:
+		void save();
+		void load();
 
 	private slots:
 		void updateData();

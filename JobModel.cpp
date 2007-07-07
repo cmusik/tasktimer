@@ -2,23 +2,14 @@
 #include <QDebug>
 #include <unistd.h>
 #include <QTimer>
+#include <QFile>
+#include <QTextStream>
+#include <QStringList>
 #include "JobModel.h"
 #include "Job.h"
 
 JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
 	jobs = new QList<Job*>();
-
-	Job *j1 = new Job(this, "job1");
-	Job *j2 = new Job(this, "job2");
-
-	j1->start();
-	j2->start();
-
-	j1->stop();
-	j2->stop();
-
-	jobs->append(j1);
-	jobs->append(j2);
 
 	QTimer *timer = new QTimer(this);
 	timer->setInterval(1000);
@@ -47,8 +38,9 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 
 	if (index.column() == 0)
 		return jobs->at(index.row())->getName();
-	else
-		return jobs->at(index.row())->duration();
+	else {
+		return QTime().addSecs(jobs->at(index.row())->duration()).toString("HH:mm:ss");
+	}
 
 }
 
@@ -96,13 +88,53 @@ bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role
 	return true;
 }
 
-bool JobModel::insertRows(int, int count, const QModelIndex&) {
-	qDebug() <<  jobs->count() << jobs->count()+count-1;
-	beginInsertRows(QModelIndex(), jobs->count(), jobs->count()+count-1);
+bool JobModel::insertRows(int pos, int count, const QModelIndex&) {
+	qDebug() <<  pos+1 << pos+count;
+	beginInsertRows(QModelIndex(), pos+1, pos+count);
 
 	for (int i = 0; i < count; ++i)
-		jobs->append(new Job(this, QString()));
+		jobs->insert(pos+1, new Job(this, QString()));
 
 	endInsertRows();
 	return true;
+}
+
+bool JobModel::removeRows(int pos, int count, const QModelIndex&) {
+	qDebug() <<  pos << pos+count;
+	beginRemoveRows(QModelIndex(), pos, pos+count-1);
+
+	for (int i = 0; i < count; ++i)
+		jobs->removeAt(pos);
+
+	endRemoveRows();
+	return true;
+}
+
+void JobModel::save() {
+	QFile file("saved_jobs.txt");
+	if (file.open(QFile::WriteOnly | QFile::Truncate)) {
+		QTextStream out(&file);
+		foreach(Job *j, *jobs) {
+			out << j->getName() << " " << j->duration() << "\n";
+		}
+		file.close();
+	}
+}
+
+void JobModel::load() {
+	QFile file("saved_jobs.txt");
+	if (file.open(QFile::ReadOnly)) {
+		QTextStream in(&file);
+		while(!in.atEnd()) {
+			QString str = in.readLine();
+			QStringList list = str.split(" ");
+			QString time = list.takeLast();
+
+			Job *j = new Job(this, list.join(" "));
+			j->setElapsed(time.toUInt());
+			jobs->append(j);
+		}
+
+		file.close();
+	}
 }

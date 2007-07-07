@@ -16,6 +16,9 @@
    <layout class="QVBoxLayout" >
     <item>
      <widget class="QTableView" name="jobTable" >
+      <property name="selectionMode" >
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
       <property name="selectionBehavior" >
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
@@ -36,6 +39,7 @@
     <property name="title" >
      <string>File</string>
     </property>
+    <addaction name="actionSave" />
     <addaction name="actionExit" />
    </widget>
    <addaction name="menuFile" />
@@ -53,8 +57,8 @@
    </attribute>
    <addaction name="actionNew" />
    <addaction name="actionStart" />
-   <addaction name="actionPause" />
    <addaction name="actionStop" />
+   <addaction name="actionRemove" />
   </widget>
   <action name="actionExit" >
    <property name="text" >
@@ -76,9 +80,14 @@
     <string>Stop</string>
    </property>
   </action>
-  <action name="actionPause" >
+  <action name="actionRemove" >
    <property name="text" >
-    <string>Pause</string>
+    <string>Remove</string>
+   </property>
+  </action>
+  <action name="actionSave" >
+   <property name="text" >
+    <string>Save</string>
    </property>
   </action>
  </widget>

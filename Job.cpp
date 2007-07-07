@@ -45,3 +45,7 @@ uint Job::calculateElapsedTime() {
 uint Job::duration() {
 	return elapsedTime+calculateElapsedTime();
 }
+
+void Job::setElapsed(uint t) {
+	elapsedTime = t;
+}

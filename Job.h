@@ -19,6 +19,7 @@ class Job : public QObject {
 		QString getName();
 		void setName(QString);
 		uint duration();
+		void setElapsed(uint);
 
 	private:
 		uint calculateElapsedTime();

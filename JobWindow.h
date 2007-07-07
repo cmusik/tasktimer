@@ -12,7 +12,10 @@ class JobWindow : public QMainWindow, private Ui::JobWindow {
 		void startJob();
 		void stopJob();
 		void addJob();
+		void removeJob();
 
 	private:
+		void closeEvent(QCloseEvent *);
+
 		JobModel *jobData;
 };
