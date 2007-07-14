@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
+#include <QSettings>
 #include "JobModel.h"
 #include "Job.h"
 
@@ -90,15 +91,19 @@ Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {
 
 	if (index.isValid())
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
-	else
+	else {
+	qDebug() << index;
 		return Qt::ItemIsDropEnabled | defaultFlags;
+	}
 
 }
 
-bool JobModel::setData(const QModelIndex &index, const QVariant &value, int /*role*/) {
+bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	if (!index.isValid())
 		return false;
 	if (index.column() != Name)
+		return false;
+	if (role != Qt::EditRole)
 		return false;
 
 	jobs->at(index.row())->setName(value.toString());
@@ -115,6 +120,10 @@ bool JobModel::insertRows(int pos, int count, const QModelIndex&) {
 	return true;
 }
 
+bool JobModel::insertRow(int pos, const QModelIndex&) {
+	return insertRows(pos, 1);
+}
+
 bool JobModel::removeRows(int pos, int count, const QModelIndex&) {
 	beginRemoveRows(QModelIndex(), pos, pos+count-1);
 
@@ -125,34 +134,37 @@ bool JobModel::removeRows(int pos, int count, const QModelIndex&) {
 	return true;
 }
 
+bool JobModel::removeRow(int pos, const QModelIndex&) {
+	return removeRows(pos, 1);
+}
+
 void JobModel::save() {
-	QFile file("saved_jobs.txt");
-	if (file.open(QFile::WriteOnly | QFile::Truncate)) {
-		QTextStream out(&file);
-		foreach(Job *j, *jobs) {
-			out << j->getName() << " " << j->duration() << " " << (j->isDone() ? 1 : 0) << "\n";
-		}
-		file.close();
+	QSettings settings("Jobtimer", "jobtimer");
+	settings.clear();
+
+	int i = 0;
+	foreach(Job *j, *jobs) {
+		settings.beginGroup(QString("job%1").arg(QString::number(i), 4, '0'));
+		settings.setValue("name", j->getName());
+		settings.setValue("duration", j->duration());
+		settings.setValue("status", j->isDone());
+		settings.endGroup();
+		++i;
 	}
 }
 
 void JobModel::load() {
-	QFile file("saved_jobs.txt");
-	if (file.open(QFile::ReadOnly)) {
-		QTextStream in(&file);
-		while(!in.atEnd()) {
-			QString str = in.readLine();
-			QStringList list = str.split(" ");
-			QString done = list.takeLast();
-			QString time = list.takeLast();
+	QSettings settings("Jobtimer", "jobtimer");
 
-			Job *j = new Job(this, list.join(" "));
-			j->setElapsed(time.toUInt());
-			j->setDone(done == "1" ? true : false);
-			jobs->append(j);
-		}
+	foreach(QString group, settings.childGroups()) {
+		settings.beginGroup(group);
 
-		file.close();
+		Job *j = new Job(this, settings.value("name").toString());
+		j->setElapsed(settings.value("duration").toUInt());
+		j->setDone(settings.value("done").toBool());
+		jobs->append(j);
+
+		settings.endGroup();
 	}
 }
 
@@ -170,12 +182,12 @@ bool JobModel::isActive(const QModelIndex &index) {
 
 Qt::DropActions JobModel::supportedDropActions() const
 {
-	return Qt::CopyAction | Qt::MoveAction;
+	return  Qt::CopyAction| Qt::MoveAction;
 }
 
 Qt::DropActions JobModel::supportedDragActions() const
 {
-	return Qt::CopyAction | Qt::MoveAction;
+	return  Qt::CopyAction | Qt::MoveAction;
 }
 
 bool JobModel::isDone(const QModelIndex &index) {

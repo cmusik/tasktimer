@@ -22,7 +22,9 @@ class JobModel : public QAbstractTableModel {
 		void start(const QModelIndex&);
 		void stop(const QModelIndex&);
 		bool insertRows(int, int, const QModelIndex& = QModelIndex());
+		bool insertRow(int, const QModelIndex& = QModelIndex());
 		bool removeRows(int, int, const QModelIndex& = QModelIndex());
+		bool removeRow(int, const QModelIndex& = QModelIndex());
 		bool hasActive();
 		bool isActive(const QModelIndex&);
 		bool isDone(const QModelIndex&);

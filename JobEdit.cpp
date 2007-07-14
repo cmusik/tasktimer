@@ -83,7 +83,8 @@ void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, cons
 		if (active) {
 			painter->save();
 			painter->translate(x, y);
-			painter->setPen(Qt::NoPen);
+			//painter->setPen(Qt::NoPen);
+			painter->setPen(QColor(Qt::green).darker());
 			painter->setBrush(QBrush(Qt::green));
 			painter->drawPolygon(points, 3);
 			painter->restore();
