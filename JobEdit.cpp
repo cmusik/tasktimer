@@ -3,14 +3,26 @@
 #include <QDebug>
 #include <QPainter>
 #include "JobEdit.h"
+#include "JobModel.h"
+
+static int objectHeight = 14;
+static const QPointF points[3] = {QPointF(0.0, 0.0), QPointF(10.0, (objectHeight/2)), QPointF(0.0, objectHeight)};
 
 JobEdit::JobEdit(QObject *parent) : QItemDelegate(parent) {
 }
 
-QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/,
 		const QModelIndex &index) const {
 
-	if (index.column() == 1)
+	/*
+	if (index.column() == 0) {
+		JobModel *j = (JobModel*) index.model();
+		j->start(index);
+	}
+	*/
+
+
+	if (index.column() == Name)
 		return new QLineEdit(parent);
 
 	return NULL;
@@ -41,32 +53,49 @@ void JobEdit::setModelData(QWidget *editor, QAbstractItemModel *model,
 }
 
 void JobEdit::updateEditorGeometry(QWidget *editor,
-		const QStyleOptionViewItem &option, const QModelIndex &index) const {
+		const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const {
 	editor->setGeometry(option.rect);
 }
 
 void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const {
-	/*
-	if (index.column() == 0) {
-	//if (option.state & QStyle::State_Selected)
-		//painter->fillRect(option.rect, option.palette.highlight());
-
 	painter->save();
-	//painter->setRenderHint(QPainter::Antialiasing, true);
-	//painter->setPen(Qt::NoPen);
-	//
-	//if (option.state & QStyle::State_Selected)
-	//	painter->setBrush(option.palette.highlightedText());
-	//else
-	//	painter->setBrush(QBrush(Qt::black));
 
-	painter->drawText(option.rect.x()+5, option.rect.y()+((option.rect.height()+option.fontMetrics.xHeight())/2), "asdf");
-	painter->restore();
+	bool active = ((JobModel*) index.model())->isActive(index);
+	bool done = ((JobModel*) index.model())->isDone(index);
 
+	painter->setRenderHint(QPainter::Antialiasing, true);
+	if (option.state & QStyle::State_Selected) {
+		painter->fillRect(option.rect, option.palette.highlight());
+		painter->setPen(option.palette.highlightedText().color());
+	}
+
+	if (done) {
+		QFont f = option.font;
+		f.setStrikeOut(true);
+		painter->setFont(f);
+	}
+
+	float x = option.rect.x()+5;
+	float h = option.rect.height();
+	float y = option.rect.y()+((h-objectHeight)/2);
+
+	if (index.column() == 1) {
+		if (active) {
+			painter->save();
+			painter->translate(x, y);
+			painter->setPen(Qt::NoPen);
+			painter->setBrush(QBrush(Qt::green));
+			painter->drawPolygon(points, 3);
+			painter->restore();
+		}
+
+		painter->drawText(option.rect.x()+20, option.rect.y()+((option.rect.height()+option.fontMetrics.xHeight())/2), index.model()->data(index).toString());
 	}
 	else
-	*/
-		QItemDelegate::paint(painter, option, index);
+		painter->drawText(option.rect.x()+5, option.rect.y()+((option.rect.height()+option.fontMetrics.xHeight())/2), index.model()->data(index).toString());
+	painter->restore();
+
+	//QItemDelegate::paint(painter, option, index);
 }
 
 QSize JobEdit::sizeHint (const QStyleOptionViewItem &option, const QModelIndex &index) const {

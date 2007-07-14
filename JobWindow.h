@@ -13,6 +13,7 @@ class JobWindow : public QMainWindow, private Ui::JobWindow {
 		void stopJob();
 		void addJob();
 		void removeJob();
+		void doneJob();
 
 	private:
 		void closeEvent(QCloseEvent *);

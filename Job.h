@@ -20,6 +20,8 @@ class Job : public QObject {
 		uint duration();
 		void setElapsed(uint);
 		bool isStarted();
+		bool isDone();
+		void setDone(bool);
 
 	private:
 		uint calculateElapsedTime();
@@ -27,6 +29,7 @@ class Job : public QObject {
 		uint elapsedTime;
 		QString name;
 		QDateTime *started;
+		bool done;
 };
 
 #endif

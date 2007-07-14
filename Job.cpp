@@ -5,6 +5,7 @@ Job::Job(QObject *parent, QString n) : QObject(parent) {
 	name = n;
 	elapsedTime = 0;
 	started = NULL;
+	done = false;
 }
 
 void Job::start() {
@@ -55,4 +56,12 @@ bool Job::isStarted() {
 		return true;
 
 	return false;
+}
+
+bool Job::isDone() {
+	return done;
+}
+
+void Job::setDone(bool d) {
+	done = d;
 }

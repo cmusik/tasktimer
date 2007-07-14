@@ -19,6 +19,7 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionStop, SIGNAL(activated()), this, SLOT(stopJob()));
 	connect(actionNew, SIGNAL(activated()), this, SLOT(addJob()));
 	connect(actionRemove, SIGNAL(activated()), this, SLOT(removeJob()));
+	connect(actionDone, SIGNAL(activated()), this, SLOT(doneJob()));
 
 	jobTable->setSelectionModel(new QItemSelectionModel(jobData));
 	jobTable->resizeColumnToContents(Counter);
@@ -73,4 +74,8 @@ void JobWindow::closeEvent(QCloseEvent *event) {
 	}
 	jobData->save();
 	event->accept();
+}
+
+void JobWindow::doneJob() {
+	jobData->setDone(jobData->isDone(jobTable->currentIndex()) ? false : true, jobTable->currentIndex());
 }

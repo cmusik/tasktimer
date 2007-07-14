@@ -19,7 +19,11 @@ JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
 }
 
 void JobModel::updateData() {
-	emit dataChanged(createIndex(2, 1), createIndex(2, jobs->count()-1));
+	for(int i = 0; i < jobs->count(); ++i) {
+		if (jobs->at(i)->isStarted()) {
+			emit dataChanged(index(i, Time), index(i, Time));
+		}
+	}
 }
 
 int JobModel::rowCount(const QModelIndex&) const {
@@ -37,7 +41,6 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 
-
 	switch(index.column()) {
 		case Counter:
 			return index.row()+1;
@@ -52,10 +55,13 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 
 void JobModel::start(const QModelIndex& index) {
 	jobs->at(index.row())->start();
+	jobs->at(index.row())->setDone(false);
+	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
 }
 
 void JobModel::stop(const QModelIndex& index) {
 	jobs->at(index.row())->stop();
+	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
 }
 
 QVariant JobModel::headerData (int section, Qt::Orientation orientation, int role) const {
@@ -80,13 +86,16 @@ QVariant JobModel::headerData (int section, Qt::Orientation orientation, int rol
 }
 
 Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {
-	if (!index.isValid())
-		return NULL;
+	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
 
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+	if (index.isValid())
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+	else
+		return Qt::ItemIsDropEnabled | defaultFlags;
+
 }
 
-bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+bool JobModel::setData(const QModelIndex &index, const QVariant &value, int /*role*/) {
 	if (!index.isValid())
 		return false;
 	if (index.column() != Name)
@@ -121,7 +130,7 @@ void JobModel::save() {
 	if (file.open(QFile::WriteOnly | QFile::Truncate)) {
 		QTextStream out(&file);
 		foreach(Job *j, *jobs) {
-			out << j->getName() << " " << j->duration() << "\n";
+			out << j->getName() << " " << j->duration() << " " << (j->isDone() ? 1 : 0) << "\n";
 		}
 		file.close();
 	}
@@ -134,10 +143,12 @@ void JobModel::load() {
 		while(!in.atEnd()) {
 			QString str = in.readLine();
 			QStringList list = str.split(" ");
+			QString done = list.takeLast();
 			QString time = list.takeLast();
 
 			Job *j = new Job(this, list.join(" "));
 			j->setElapsed(time.toUInt());
+			j->setDone(done == "1" ? true : false);
 			jobs->append(j);
 		}
 
@@ -151,4 +162,32 @@ bool JobModel::hasActive() {
 			return true;
 	}
 	return false;
+}
+
+bool JobModel::isActive(const QModelIndex &index) {
+	return jobs->at(index.row())->isStarted();
+}
+
+Qt::DropActions JobModel::supportedDropActions() const
+{
+	return Qt::CopyAction | Qt::MoveAction;
+}
+
+Qt::DropActions JobModel::supportedDragActions() const
+{
+	return Qt::CopyAction | Qt::MoveAction;
+}
+
+bool JobModel::isDone(const QModelIndex &index) {
+	return jobs->at(index.row())->isDone();
+}
+
+void JobModel::setDone(bool d, const QModelIndex &index) {
+	jobs->at(index.row())->stop();
+	jobs->at(index.row())->setDone(d);
+	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
+}
+
+QModelIndex JobModel::index (int row, int column, const QModelIndex &parent) const {
+	return createIndex(row, column, jobs->at(row));
 }
