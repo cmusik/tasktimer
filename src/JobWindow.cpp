@@ -39,6 +39,8 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	jobTable->resizeColumnToContents(Counter);
 	jobTable->resizeColumnToContents(Priority);
 	jobTable->resizeColumnToContents(ColumnTime);
+	jobTable->horizontalHeader()->setResizeMode(Counter, QHeaderView::Fixed);
+	jobTable->horizontalHeader()->setResizeMode(Priority, QHeaderView::Fixed);
 	jobTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
 	jobTable->verticalHeader()->hide();
 

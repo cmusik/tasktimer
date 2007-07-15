@@ -82,7 +82,12 @@ void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, cons
 	if (index.column() == Priority) {
 		painter->save();
 		painter->translate(option.rect.x(), option.rect.y());
-		painter->setPen(QColor(Qt::black));
+
+		if (option.state & QStyle::State_Selected)
+			painter->setPen(QColor(Qt::white));
+		else
+			painter->setPen(QColor(Qt::black));
+
 		int barh = h/7;
 		for(int i = 0; i < priority; i++) {
 			QColor c;
@@ -106,7 +111,6 @@ void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, cons
 		if (active) {
 			painter->save();
 			painter->translate(x, y);
-			//painter->setPen(Qt::NoPen);
 			painter->setPen(QColor(Qt::green).darker());
 			painter->setBrush(QBrush(Qt::green));
 			painter->drawPolygon(points, 3);
