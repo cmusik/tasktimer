@@ -111,7 +111,10 @@ void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, cons
 		if (active) {
 			painter->save();
 			painter->translate(x, y);
-			painter->setPen(QColor(Qt::green).darker());
+			if (option.state & QStyle::State_Selected)
+				painter->setPen(QColor(Qt::white));
+			else
+				painter->setPen(QColor(Qt::black));
 			painter->setBrush(QBrush(Qt::green));
 			painter->drawPolygon(points, 3);
 			painter->restore();

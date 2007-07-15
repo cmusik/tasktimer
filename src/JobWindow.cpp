@@ -118,11 +118,10 @@ void JobWindow::addJob() {
 
 void JobWindow::removeJob() {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
-	int pos = 0;
-	if (selected.count())
-		pos = m_filter->mapToSource(selected.at(0)).row();
-
-	m_data->removeRows(pos, 1);
+	if (selected.count() == 1) {
+		int pos = m_filter->mapToSource(selected.at(0)).row();
+		m_data->removeRows(pos, 1);
+	}
 }
 
 void JobWindow::closeEvent(QCloseEvent *event) {
