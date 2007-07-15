@@ -68,7 +68,7 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	//stopMenu->addAction(actionStopAll);
 	//actionStop->setMenu(stopMenu);
 
-	QSettings settings("Jobtimer", "jobtimer");
+	QSettings settings("TaskTimer", "tasktimer");
 	m_filter->filterDone(settings.value("hide_done").toBool());
 	actionHideDone->setChecked(settings.value("hide_done").toBool());
 	Qt::ToolBarArea area = Qt::TopToolBarArea;
@@ -105,7 +105,7 @@ void JobWindow::stopJob() {
 
 void JobWindow::addJob() {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
-	int pos = 0;
+	int pos = -1;
 	if (selected.count())
 		pos = m_filter->mapToSource(selected.at(0)).row();
 
@@ -139,7 +139,7 @@ void JobWindow::closeEvent(QCloseEvent *event) {
 	m_data->save();
 
 	// settings get cleared with save()
-	QSettings settings("Jobtimer", "jobtimer");
+	QSettings settings("TaskTimer", "tasktimer");
 	settings.setValue("hide_done", actionHideDone->isChecked());
 	settings.setValue("toolbar_pos", toolBarArea(toolBar));
 

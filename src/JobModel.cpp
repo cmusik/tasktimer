@@ -68,12 +68,12 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 void JobModel::start(const QModelIndex& index) {
 	jobs->at(index.row())->start();
 	jobs->at(index.row())->setDone(false);
-	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
+	emit dataChanged(this->index(0, 0), this->index(jobs->count()-1, 3));
 }
 
 void JobModel::stop(const QModelIndex& index) {
 	jobs->at(index.row())->stop();
-	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
+	emit dataChanged(this->index(0, 0), this->index(jobs->count()-1, 3));
 }
 
 QVariant JobModel::headerData (int section, Qt::Orientation orientation, int role) const {
@@ -160,7 +160,7 @@ bool JobModel::removeRow(int pos, const QModelIndex&) {
 }
 
 void JobModel::save() {
-	QSettings settings("Jobtimer", "jobtimer");
+	QSettings settings("TaskTimer", "tasktimer");
 	settings.clear();
 
 	int i = 0;
@@ -176,7 +176,7 @@ void JobModel::save() {
 }
 
 void JobModel::load() {
-	QSettings settings("Jobtimer", "jobtimer");
+	QSettings settings("TaskTimer", "tasktimer");
 
 	foreach(QString group, settings.childGroups()) {
 		settings.beginGroup(group);
