@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QActionGroup>
+#include <QSettings>
 
 #include "JobWindow.h"
 #include "JobEdit.h"
@@ -50,7 +51,6 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	m_idleTimer->setInterval(1000);
 	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(checkIdle()));
 
-
 	QActionGroup *priority = new QActionGroup(this);
 	priority->addAction(actionPrio0);
 	priority->addAction(actionPrio1);
@@ -62,9 +62,17 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	actionPrio2->setData(2);
 	actionPrio3->setData(3);
 
+	QSettings settings("Jobtimer", "jobtimer");
+	m_filter->filterDone(settings.value("hide_done").toBool());
+	actionHideDone->setChecked(settings.value("hide_done").toBool());
+	Qt::ToolBarArea area = Qt::TopToolBarArea;
+	if (settings.contains("toolbar_pos"))
+		area = (Qt::ToolBarArea) settings.value("toolbar_pos").toInt();
+
+	if (area)
+		addToolBar(area, toolBar);
+
 	connect(priority, SIGNAL(triggered(QAction*)), this, SLOT(setPriority(QAction*)));
-	//menuTask->addAction(actionPrio0);
-	//menuTask->addAction(actionPrio1);
 
 	show();
 }
@@ -114,6 +122,13 @@ void JobWindow::closeEvent(QCloseEvent *event) {
 		}
 	}
 	m_data->save();
+
+	// settings get cleared with save()
+	QSettings settings("Jobtimer", "jobtimer");
+	settings.setValue("hide_done", actionHideDone->isChecked());
+	qDebug() << toolBarArea(toolBar);
+	settings.setValue("toolbar_pos", toolBarArea(toolBar));
+
 	event->accept();
 }
 
