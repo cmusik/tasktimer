@@ -65,6 +65,11 @@
     <addaction name="actionStop" />
     <addaction name="actionRemove" />
     <addaction name="actionDone" />
+    <addaction name="separator" />
+    <addaction name="actionPrio0" />
+    <addaction name="actionPrio1" />
+    <addaction name="actionPrio2" />
+    <addaction name="actionPrio3" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuTask" />
@@ -153,6 +158,38 @@
    </property>
    <property name="shortcut" >
     <string>T</string>
+   </property>
+  </action>
+  <action name="actionPrio1" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>normal</string>
+   </property>
+  </action>
+  <action name="actionPrio2" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>high</string>
+   </property>
+  </action>
+  <action name="actionPrio3" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>highest</string>
+   </property>
+  </action>
+  <action name="actionPrio0" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>low</string>
    </property>
   </action>
  </widget>

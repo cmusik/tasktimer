@@ -24,14 +24,17 @@ class Job : public QObject {
 		void setDone(bool);
 		void revert(uint);
 		void addTime(int);
+		int priority();
+		void setPriority(int);
 
 	private:
 		uint calculateElapsedTime();
 
-		uint elapsedTime;
-		QString name;
-		QDateTime *started;
-		bool done;
+		uint m_elapsedTime;
+		int m_priority;
+		QString m_name;
+		QDateTime *m_started;
+		bool m_done;
 };
 
 #endif

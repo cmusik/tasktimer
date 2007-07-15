@@ -12,15 +12,17 @@ JobEdit::JobEdit(QObject *parent) : QItemDelegate(parent) {
 }
 
 QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const {
-
-	if (index.column() == Name)
-		return new QLineEdit(parent);
-	if (index.column() == ColumnTime) {
-		QLineEdit *lineEdit = new QLineEdit(parent);
-		return lineEdit;
+	switch(index.column()) {
+		case Name:
+			return new QLineEdit(parent);
+		case ColumnTime:
+			{
+			QLineEdit *lineEdit = new QLineEdit(parent);
+			return lineEdit;
+			}
+		default:
+			return NULL;
 	}
-
-	return NULL;
 }
 
 void JobEdit::setEditorData(QWidget *editor, const QModelIndex &index) const {
@@ -59,6 +61,7 @@ void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, cons
 
 	bool active = index.model()->data(index, Active).toBool();
 	bool done = index.model()->data(index, Done).toBool();
+	int priority = index.model()->data(index, 34).toInt();
 
 	painter->setRenderHint(QPainter::Antialiasing, true);
 	if (option.state & QStyle::State_Selected) {
@@ -76,7 +79,30 @@ void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, cons
 	float h = option.rect.height();
 	float y = option.rect.y()+((h-objectHeight)/2);
 
-	if (index.column() == 1) {
+	if (index.column() == Priority) {
+		painter->save();
+		painter->translate(option.rect.x(), option.rect.y());
+		painter->setPen(QColor(Qt::black));
+		int barh = h/7;
+		for(int i = 0; i < priority; i++) {
+			QColor c;
+			switch(priority) {
+				case 1:
+					c = QColor(Qt::green);
+					break;
+				case 2:
+					c = QColor(Qt::yellow);
+					break;
+				case 3:
+					c = QColor(Qt::red);
+					break;
+			}
+			painter->drawRect(5, h-2*(barh+(barh*i)), option.rect.width()-10, barh);
+			painter->fillRect(5, h-2*(barh+(barh*i)), option.rect.width()-10, barh, QBrush(c));
+		}
+		painter->restore();
+	}
+	else if (index.column() == Name) {
 		if (active) {
 			painter->save();
 			painter->translate(x, y);

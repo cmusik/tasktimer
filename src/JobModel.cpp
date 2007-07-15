@@ -32,7 +32,7 @@ int JobModel::rowCount(const QModelIndex&) const {
 }
 
 int JobModel::columnCount(const QModelIndex&) const {
-	return 3;
+	return 4;
 }
 
 QVariant JobModel::data(const QModelIndex& index, int role) const {
@@ -41,6 +41,9 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 
 	if (role == Done)
 		return QVariant(isDone(index));
+
+	if (role == 34)
+		return priority(index);
 
 	if (role != Qt::DisplayRole)
 		return QVariant();
@@ -51,6 +54,8 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 	switch(index.column()) {
 		case Counter:
 			return index.row()+1;
+		case Priority:
+			return jobs->at(index.row())->priority();
 		case Name:
 			return jobs->at(index.row())->getName();
 		case ColumnTime:
@@ -79,6 +84,8 @@ QVariant JobModel::headerData (int section, Qt::Orientation orientation, int rol
 		switch(section) {
 			case Counter:
 				return QVariant();
+			case Priority:
+				return QString("Priority");
 			case Name:
 				return QString("Name");
 			case ColumnTime:
@@ -162,6 +169,7 @@ void JobModel::save() {
 		settings.setValue("name", j->getName());
 		settings.setValue("duration", j->duration());
 		settings.setValue("status", j->isDone());
+		settings.setValue("priority", j->priority());
 		settings.endGroup();
 		++i;
 	}
@@ -176,6 +184,7 @@ void JobModel::load() {
 		Job *j = new Job(this, settings.value("name").toString());
 		j->setElapsed(settings.value("duration").toUInt());
 		j->setDone(settings.value("status").toBool());
+		j->setPriority(settings.value("priority").toInt());
 		jobs->append(j);
 
 		settings.endGroup();
@@ -230,4 +239,12 @@ void JobModel::revertActive(uint t) {
 			j->revert(t);
 	}
 	emit dataChanged(index(0, ColumnTime), index(jobs->count(), ColumnTime));
+}
+
+int JobModel::priority(const QModelIndex& index) const {
+	return jobs->at(index.row())->priority();
+}
+
+void JobModel::setPriority(int value, const QModelIndex& index) {
+	jobs->at(index.row())->setPriority(value);
 }

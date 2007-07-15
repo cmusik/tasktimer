@@ -7,6 +7,7 @@
 #include <QX11Info>
 #include <QTimer>
 #include <QDateTime>
+#include <QActionGroup>
 
 #include "JobWindow.h"
 #include "JobEdit.h"
@@ -34,7 +35,9 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
 
 	jobTable->setSelectionModel(new QItemSelectionModel(m_filter));
+	connect(jobTable->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectionChange(const QModelIndex&)));
 	jobTable->resizeColumnToContents(Counter);
+	jobTable->resizeColumnToContents(Priority);
 	jobTable->resizeColumnToContents(ColumnTime);
 	jobTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
 	jobTable->verticalHeader()->hide();
@@ -44,6 +47,22 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	m_idleTimer= new QTimer(this);
 	m_idleTimer->setInterval(1000);
 	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(checkIdle()));
+
+
+	QActionGroup *priority = new QActionGroup(this);
+	priority->addAction(actionPrio0);
+	priority->addAction(actionPrio1);
+	priority->addAction(actionPrio2);
+	priority->addAction(actionPrio3);
+
+	actionPrio0->setData(0);
+	actionPrio1->setData(1);
+	actionPrio2->setData(2);
+	actionPrio3->setData(3);
+
+	connect(priority, SIGNAL(triggered(QAction*)), this, SLOT(setPriority(QAction*)));
+	//menuTask->addAction(actionPrio0);
+	//menuTask->addAction(actionPrio1);
 
 	show();
 }
@@ -67,6 +86,7 @@ void JobWindow::addJob() {
 	m_data->insertRows(pos, 1);
 
 	jobTable->resizeColumnToContents(Counter);
+	jobTable->resizeColumnToContents(Priority);
 	jobTable->resizeColumnToContents(ColumnTime);
 }
 
@@ -77,7 +97,6 @@ void JobWindow::removeJob() {
 		pos = m_filter->mapToSource(selected.at(0)).row();
 
 	m_data->removeRows(pos, 1);
-	jobTable->update();
 }
 
 void JobWindow::closeEvent(QCloseEvent *event) {
@@ -120,5 +139,33 @@ void JobWindow::checkIdle() {
 			m_data->revertActive(eclapsedTime);
 		}
 		m_idleTimer->start();
+	}
+}
+
+void JobWindow::setPriority(QAction *action) {
+	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	const QModelIndex &index = m_filter->mapToSource(selected.at(0));
+
+	m_data->setPriority(action->data().toInt(), index);
+}
+
+void JobWindow::selectionChange(const QModelIndex &index) {
+	if (!index.isValid())
+		return;
+	const QModelIndex &i = m_filter->mapToSource(index);
+
+	switch (i.model()->data(i, 34).toInt()) {
+		case 0:
+			actionPrio0->setChecked(true);
+			break;
+		case 1:
+			actionPrio1->setChecked(true);
+			break;
+		case 2:
+			actionPrio2->setChecked(true);
+			break;
+		case 3:
+			actionPrio3->setChecked(true);
+			break;
 	}
 }

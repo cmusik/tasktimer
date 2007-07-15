@@ -7,8 +7,9 @@
 
 enum Columns {
 	Counter = 0,
-	Name = 1,
-	ColumnTime = 2
+	Priority = 1,
+	Name = 2,
+	ColumnTime = 3
 };
 
 enum Roles {
@@ -37,6 +38,8 @@ class JobModel : public QAbstractTableModel {
 		void setDone(bool, const QModelIndex&);
 		QModelIndex index (int, int, const QModelIndex & = QModelIndex() ) const;
 		void revertActive(uint);
+		int priority(const QModelIndex&) const;
+		void setPriority(int, const QModelIndex&);
 
 	public slots:
 		void save();

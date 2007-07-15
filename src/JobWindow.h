@@ -25,6 +25,8 @@ class JobWindow : public QMainWindow, private Ui::JobWindow {
 		void removeJob();
 		void doneJob();
 		void checkIdle();
+		void setPriority(QAction*);
+		void selectionChange(const QModelIndex&);
 
 	private:
 		void closeEvent(QCloseEvent *);
