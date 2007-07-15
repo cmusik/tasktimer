@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>JobTimer</string>
+   <string>TaskTimer</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QVBoxLayout" >
@@ -78,7 +78,7 @@
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
    <property name="windowTitle" >
-    <string>Toolbar</string>
+    <string>TaskTimer</string>
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>

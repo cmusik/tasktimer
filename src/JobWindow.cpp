@@ -127,7 +127,7 @@ void JobWindow::removeJob() {
 void JobWindow::closeEvent(QCloseEvent *event) {
 	if (m_data->hasActive()) {
 		QMessageBox::StandardButton ret;
-		ret = QMessageBox::warning(this, tr("Application"),
+		ret = QMessageBox::question(this, tr("Quit TaskTimer?"),
 				tr("There are running jobs. Do you want to save and quit?"),
 				QMessageBox::Yes | QMessageBox::No);
 
@@ -167,7 +167,7 @@ void JobWindow::checkIdle() {
 		QDateTime stoppedTime(QDateTime::currentDateTime().addSecs(-3*60));
 
 		QMessageBox::StandardButton ret;
-		ret = QMessageBox::warning(this, tr("Application"),
+		ret = QMessageBox::warning(this, tr("Idle detected"),
 				tr("Idle since %1. Do you want to revert timing?").arg(stoppedTime.toString()),
 				QMessageBox::Yes | QMessageBox::No);
 
