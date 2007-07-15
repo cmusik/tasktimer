@@ -6,6 +6,9 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
+OBJECTS_DIR = .obj
+UI_DIR = .ui
+MOC_DIR = .moc
 
 # Input
 HEADERS += src/Job.h src/JobWindow.h src/JobModel.h src/JobEdit.h src/JobFilter.h
