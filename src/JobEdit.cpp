@@ -2,6 +2,7 @@
 #include <QModelIndex>
 #include <QDebug>
 #include <QPainter>
+#include <QIntValidator>
 #include "JobEdit.h"
 #include "JobModel.h"
 
@@ -18,6 +19,8 @@ QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*op
 		case ColumnTime:
 			{
 			QLineEdit *lineEdit = new QLineEdit(parent);
+			const QIntValidator *v = new QIntValidator(parent);
+			lineEdit->setValidator(v);
 			return lineEdit;
 			}
 		default:
