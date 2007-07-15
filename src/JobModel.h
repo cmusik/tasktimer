@@ -27,7 +27,6 @@ class JobModel : public QAbstractTableModel {
 
 		void start(const QModelIndex&);
 		void stop(const QModelIndex&);
-		void stopAll();
 		bool insertRows(int, int, const QModelIndex& = QModelIndex());
 		bool insertRow(int, const QModelIndex& = QModelIndex());
 		bool removeRows(int, int, const QModelIndex& = QModelIndex());
@@ -44,6 +43,7 @@ class JobModel : public QAbstractTableModel {
 	public slots:
 		void save();
 		void load();
+		void stopAll();
 
 	private slots:
 		void updateData();

@@ -12,6 +12,7 @@ class JobFilter : public QSortFilterProxyModel {
 
 	public slots:
 		void filterDone(bool);
+		void invalidate();
 
 	private:
 		bool m_filterDone;

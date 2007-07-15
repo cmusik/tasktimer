@@ -192,6 +192,11 @@
     <string>low</string>
    </property>
   </action>
+  <action name="actionStopAll" >
+   <property name="text" >
+    <string>Stop all</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../pics/pics.qrc" />

@@ -32,6 +32,7 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionNew, SIGNAL(activated()), this, SLOT(addJob()));
 	connect(actionRemove, SIGNAL(activated()), this, SLOT(removeJob()));
 	connect(actionDone, SIGNAL(activated()), this, SLOT(doneJob()));
+	connect(actionStopAll, SIGNAL(activated()), m_data, SLOT(stopAll()));
 
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
 
@@ -62,6 +63,11 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	actionPrio2->setData(2);
 	actionPrio3->setData(3);
 
+	QMenu *stopMenu = new QMenu(this);
+	actionStopAll->setShortcut(Qt::Key_Escape);
+	stopMenu->addAction(actionStopAll);
+	actionStop->setMenu(stopMenu);
+
 	QSettings settings("Jobtimer", "jobtimer");
 	m_filter->filterDone(settings.value("hide_done").toBool());
 	actionHideDone->setChecked(settings.value("hide_done").toBool());
@@ -78,13 +84,23 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 }
 
 void JobWindow::startJob() {
-	m_data->start(jobTable->currentIndex());
-	m_idleTimer->start();
+	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	if (selected.count() == 1) {
+		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
+
+		m_data->start(index);
+		m_idleTimer->start();
+	}
 }
 
 void JobWindow::stopJob() {
-	m_data->stop(jobTable->currentIndex());
-	m_idleTimer->stop();
+	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	if (selected.count() == 1) {
+		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
+
+		m_data->stop(index);
+		m_idleTimer->stop();
+	}
 }
 
 void JobWindow::addJob() {
@@ -126,14 +142,19 @@ void JobWindow::closeEvent(QCloseEvent *event) {
 	// settings get cleared with save()
 	QSettings settings("Jobtimer", "jobtimer");
 	settings.setValue("hide_done", actionHideDone->isChecked());
-	qDebug() << toolBarArea(toolBar);
 	settings.setValue("toolbar_pos", toolBarArea(toolBar));
 
 	event->accept();
 }
 
 void JobWindow::doneJob() {
-	m_data->setDone(m_data->isDone(jobTable->currentIndex()) ? false : true, jobTable->currentIndex());
+	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	if (selected.count() == 1) {
+		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
+
+		m_data->setDone(m_data->isDone(index) ? false : true, index);
+		m_filter->invalidate();
+	}
 }
 
 void JobWindow::checkIdle() {
@@ -161,9 +182,10 @@ void JobWindow::checkIdle() {
 
 void JobWindow::setPriority(QAction *action) {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
-	const QModelIndex &index = m_filter->mapToSource(selected.at(0));
-
-	m_data->setPriority(action->data().toInt(), index);
+	if (selected.count() == 1) {
+		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
+		m_data->setPriority(action->data().toInt(), index);
+	}
 }
 
 void JobWindow::selectionChange(const QModelIndex &index) {

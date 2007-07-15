@@ -22,3 +22,7 @@ void JobFilter::filterDone(bool f) {
 	//reset();
 	invalidateFilter();
 }
+
+void JobFilter::invalidate() {
+	invalidateFilter();
+}
