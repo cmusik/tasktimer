@@ -62,7 +62,7 @@
     </property>
     <addaction name="actionNew" />
     <addaction name="actionStart" />
-    <addaction name="actionStop" />
+    <addaction name="actionStopAll" />
     <addaction name="actionRemove" />
     <addaction name="actionDone" />
     <addaction name="separator" />
@@ -91,7 +91,7 @@
    </attribute>
    <addaction name="actionNew" />
    <addaction name="actionStart" />
-   <addaction name="actionStop" />
+   <addaction name="actionStopAll" />
    <addaction name="actionRemove" />
    <addaction name="actionDone" />
   </widget>
@@ -128,9 +128,6 @@
    </property>
    <property name="text" >
     <string>Stop</string>
-   </property>
-   <property name="shortcut" >
-    <string>S</string>
    </property>
   </action>
   <action name="actionRemove" >
@@ -193,8 +190,14 @@
    </property>
   </action>
   <action name="actionStopAll" >
+   <property name="icon" >
+    <iconset resource="../pics/pics.qrc" >:/icons/media-playback-stop.png</iconset>
+   </property>
    <property name="text" >
     <string>Stop all</string>
+   </property>
+   <property name="shortcut" >
+    <string>S</string>
    </property>
   </action>
  </widget>

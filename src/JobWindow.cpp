@@ -63,10 +63,10 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	actionPrio2->setData(2);
 	actionPrio3->setData(3);
 
-	QMenu *stopMenu = new QMenu(this);
-	actionStopAll->setShortcut(Qt::Key_Escape);
-	stopMenu->addAction(actionStopAll);
-	actionStop->setMenu(stopMenu);
+	//QMenu *stopMenu = new QMenu(this);
+	//actionStopAll->setShortcut(Qt::Key_Escape);
+	//stopMenu->addAction(actionStopAll);
+	//actionStop->setMenu(stopMenu);
 
 	QSettings settings("Jobtimer", "jobtimer");
 	m_filter->filterDone(settings.value("hide_done").toBool());

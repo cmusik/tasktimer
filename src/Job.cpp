@@ -10,7 +10,9 @@ Job::Job(QObject *parent, QString n) : QObject(parent) {
 }
 
 void Job::start() {
-	if (!m_started)
+	if (m_started)
+		stop();
+	else
 		m_started = new QDateTime(QDateTime::currentDateTime());
 }
 
