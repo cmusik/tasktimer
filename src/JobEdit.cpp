@@ -11,49 +11,46 @@ static const QPointF points[3] = {QPointF(0.0, 0.0), QPointF(10.0, (objectHeight
 JobEdit::JobEdit(QObject *parent) : QItemDelegate(parent) {
 }
 
-QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/,
-		const QModelIndex &index) const {
-
-	/*
-	if (index.column() == 0) {
-		JobModel *j = (JobModel*) index.model();
-		j->start(index);
-	}
-	*/
-
+QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const {
 
 	if (index.column() == Name)
 		return new QLineEdit(parent);
+	if (index.column() == ColumnTime) {
+		QLineEdit *lineEdit = new QLineEdit(parent);
+		return lineEdit;
+	}
 
 	return NULL;
 }
 
 void JobEdit::setEditorData(QWidget *editor, const QModelIndex &index) const {
-	QLineEdit *spinBox = static_cast<QLineEdit*>(editor);
 
-	if (index.column() == 1) {
-		QString value = index.model()->data(index, Qt::DisplayRole).toString();
-
-		spinBox->setText(value);
-	}
-	else {
-		int value = index.model()->data(index, Qt::DisplayRole).toInt();
-
-		spinBox->setText(QString::number(value));
+	switch(index.column()) {
+		case Name:
+			{
+				QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+				QString value = index.model()->data(index, Qt::DisplayRole).toString();
+				lineEdit->setText(value);
+			}
+		default:
+			return;
 	}
 }
 
 void JobEdit::setModelData(QWidget *editor, QAbstractItemModel *model,
 		const QModelIndex &index) const {
-	QLineEdit *spinBox = static_cast<QLineEdit*>(editor);
-
-	QString value = spinBox->text();
-
-	model->setData(index, value);
+	switch(index.column()) {
+		case Name:
+		case ColumnTime:
+			{
+				QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+				QString value = lineEdit->text();
+				model->setData(index, value);
+			}
+	}
 }
 
-void JobEdit::updateEditorGeometry(QWidget *editor,
-		const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const {
+void JobEdit::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const {
 	editor->setGeometry(option.rect);
 }
 

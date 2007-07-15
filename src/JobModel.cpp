@@ -22,7 +22,7 @@ JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
 void JobModel::updateData() {
 	for(int i = 0; i < jobs->count(); ++i) {
 		if (jobs->at(i)->isStarted()) {
-			emit dataChanged(index(i, Time), index(i, Time));
+			emit dataChanged(index(i, ColumnTime), index(i, ColumnTime));
 		}
 	}
 }
@@ -53,7 +53,7 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 			return index.row()+1;
 		case Name:
 			return jobs->at(index.row())->getName();
-		case Time:
+		case ColumnTime:
 			return QTime().addSecs(jobs->at(index.row())->duration()).toString("HH:mm:ss");
 	}
 	return QVariant();
@@ -81,7 +81,7 @@ QVariant JobModel::headerData (int section, Qt::Orientation orientation, int rol
 				return QVariant();
 			case Name:
 				return QString("Name");
-			case Time:
+			case ColumnTime:
 				return QString("Time");
 		}
 	}
@@ -107,12 +107,20 @@ Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {
 bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	if (!index.isValid())
 		return false;
-	if (index.column() != Name)
-		return false;
 	if (role != Qt::EditRole)
 		return false;
 
-	jobs->at(index.row())->setName(value.toString());
+	switch(index.column()) {
+		case Name:
+			jobs->at(index.row())->setName(value.toString());
+			break;
+		case ColumnTime:
+			jobs->at(index.row())->addTime(value.toInt()*60);
+			break;
+		default:
+			return false;
+	}
+	emit dataChanged(index, index);
 	return true;
 }
 
@@ -206,6 +214,20 @@ void JobModel::setDone(bool d, const QModelIndex &index) {
 	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
 }
 
-QModelIndex JobModel::index (int row, int column, const QModelIndex &parent) const {
+QModelIndex JobModel::index (int row, int column, const QModelIndex &/*parent*/) const {
 	return createIndex(row, column, jobs->at(row));
+}
+
+void JobModel::stopAll() {
+	foreach(Job *j, *jobs) {
+		j->stop();
+	}
+	emit dataChanged(index(0, ColumnTime), index(jobs->count(), ColumnTime));
+}
+
+void JobModel::revertActive(uint t) {
+	foreach(Job *j, *jobs) {
+			j->revert(t);
+	}
+	emit dataChanged(index(0, ColumnTime), index(jobs->count(), ColumnTime));
 }

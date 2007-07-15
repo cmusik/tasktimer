@@ -10,8 +10,10 @@ OBJECTS_DIR = .obj
 UI_DIR = .ui
 MOC_DIR = .moc
 
+LIBS += -lXss
+
 # Input
 HEADERS += src/Job.h src/JobWindow.h src/JobModel.h src/JobEdit.h src/JobFilter.h
 FORMS += ui/jobtimer.ui
 SOURCES += src/main.cpp src/Job.cpp src/JobWindow.cpp src/JobModel.cpp src/JobEdit.cpp src/JobFilter.cpp
-RESOURCES = pics.qrc
+RESOURCES = pics/pics.qrc

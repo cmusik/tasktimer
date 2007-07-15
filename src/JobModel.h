@@ -8,7 +8,7 @@
 enum Columns {
 	Counter = 0,
 	Name = 1,
-	Time = 2
+	ColumnTime = 2
 };
 
 enum Roles {
@@ -26,6 +26,7 @@ class JobModel : public QAbstractTableModel {
 
 		void start(const QModelIndex&);
 		void stop(const QModelIndex&);
+		void stopAll();
 		bool insertRows(int, int, const QModelIndex& = QModelIndex());
 		bool insertRow(int, const QModelIndex& = QModelIndex());
 		bool removeRows(int, int, const QModelIndex& = QModelIndex());
@@ -35,6 +36,7 @@ class JobModel : public QAbstractTableModel {
 		bool isDone(const QModelIndex&) const;
 		void setDone(bool, const QModelIndex&);
 		QModelIndex index (int, int, const QModelIndex & = QModelIndex() ) const;
+		void revertActive(uint);
 
 	public slots:
 		void save();

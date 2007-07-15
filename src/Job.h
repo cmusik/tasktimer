@@ -22,6 +22,8 @@ class Job : public QObject {
 		bool isStarted();
 		bool isDone();
 		void setDone(bool);
+		void revert(uint);
+		void addTime(int);
 
 	private:
 		uint calculateElapsedTime();

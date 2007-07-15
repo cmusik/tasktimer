@@ -92,7 +92,7 @@
   </widget>
   <action name="actionExit" >
    <property name="icon" >
-    <iconset resource="pics.qrc" >:/icons/pics/application-exit.png</iconset>
+    <iconset resource="../pics/pics.qrc" >:/icons/application-exit.png</iconset>
    </property>
    <property name="text" >
     <string>Exit</string>
@@ -100,7 +100,7 @@
   </action>
   <action name="actionNew" >
    <property name="icon" >
-    <iconset resource="pics.qrc" >:/icons/pics/document-new.png</iconset>
+    <iconset resource="../pics/pics.qrc" >:/icons/document-new.png</iconset>
    </property>
    <property name="text" >
     <string>New</string>
@@ -108,7 +108,7 @@
   </action>
   <action name="actionStart" >
    <property name="icon" >
-    <iconset resource="pics.qrc" >:/icons/pics/media-playback-start.png</iconset>
+    <iconset resource="../pics/pics.qrc" >:/icons/media-playback-start.png</iconset>
    </property>
    <property name="text" >
     <string>Start</string>
@@ -119,7 +119,7 @@
   </action>
   <action name="actionStop" >
    <property name="icon" >
-    <iconset resource="pics.qrc" >:/icons/pics/media-playback-stop.png</iconset>
+    <iconset resource="../pics/pics.qrc" >:/icons/media-playback-stop.png</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -130,7 +130,7 @@
   </action>
   <action name="actionRemove" >
    <property name="icon" >
-    <iconset resource="pics.qrc" >:/icons/pics/edit-delete.png</iconset>
+    <iconset resource="../pics/pics.qrc" >:/icons/edit-delete.png</iconset>
    </property>
    <property name="text" >
     <string>Remove</string>
@@ -138,7 +138,7 @@
   </action>
   <action name="actionDone" >
    <property name="icon" >
-    <iconset resource="pics.qrc" >:/icons/pics/stock_form-checkbox.png</iconset>
+    <iconset resource="../pics/pics.qrc" >:/icons/stock_form-checkbox.png</iconset>
    </property>
    <property name="text" >
     <string>Done</string>
@@ -157,7 +157,7 @@
   </action>
  </widget>
  <resources>
-  <include location="pics.qrc" />
+  <include location="../pics/pics.qrc" />
  </resources>
  <connections>
   <connection>

@@ -65,3 +65,12 @@ bool Job::isDone() {
 void Job::setDone(bool d) {
 	done = d;
 }
+
+void Job::revert(uint t) {
+	if (isStarted())
+		elapsedTime -= t;
+}
+
+void Job::addTime(int t) {
+	elapsedTime += t;
+}
