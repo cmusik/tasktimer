@@ -60,8 +60,8 @@ void JobEdit::updateEditorGeometry(QWidget *editor,
 void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const {
 	painter->save();
 
-	bool active = ((JobModel*) index.model())->isActive(index);
-	bool done = ((JobModel*) index.model())->isDone(index);
+	bool active = index.model()->data(index, Active).toBool();
+	bool done = index.model()->data(index, Done).toBool();
 
 	painter->setRenderHint(QPainter::Antialiasing, true);
 	if (option.state & QStyle::State_Selected) {

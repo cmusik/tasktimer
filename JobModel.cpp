@@ -36,6 +36,12 @@ int JobModel::columnCount(const QModelIndex&) const {
 }
 
 QVariant JobModel::data(const QModelIndex& index, int role) const {
+	if (role == Active)
+		return QVariant(isActive(index));
+
+	if (role == Done)
+		return QVariant(isDone(index));
+
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
@@ -161,14 +167,14 @@ void JobModel::load() {
 
 		Job *j = new Job(this, settings.value("name").toString());
 		j->setElapsed(settings.value("duration").toUInt());
-		j->setDone(settings.value("done").toBool());
+		j->setDone(settings.value("status").toBool());
 		jobs->append(j);
 
 		settings.endGroup();
 	}
 }
 
-bool JobModel::hasActive() {
+bool JobModel::hasActive() const {
 	foreach(Job *j, *jobs) {
 		if (j->isStarted())
 			return true;
@@ -176,7 +182,7 @@ bool JobModel::hasActive() {
 	return false;
 }
 
-bool JobModel::isActive(const QModelIndex &index) {
+bool JobModel::isActive(const QModelIndex &index) const {
 	return jobs->at(index.row())->isStarted();
 }
 
@@ -190,7 +196,7 @@ Qt::DropActions JobModel::supportedDragActions() const
 	return  Qt::CopyAction | Qt::MoveAction;
 }
 
-bool JobModel::isDone(const QModelIndex &index) {
+bool JobModel::isDone(const QModelIndex &index) const {
 	return jobs->at(index.row())->isDone();
 }
 

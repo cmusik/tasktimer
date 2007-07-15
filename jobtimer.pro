@@ -8,6 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += Job.h JobWindow.h JobModel.h JobEdit.h
+HEADERS += Job.h JobWindow.h JobModel.h JobEdit.h JobFilter.h
 FORMS += jobtimer.ui
-SOURCES += main.cpp Job.cpp JobWindow.cpp JobModel.cpp JobEdit.cpp
+SOURCES += main.cpp Job.cpp JobWindow.cpp JobModel.cpp JobEdit.cpp JobFilter.cpp
+RESOURCES = pics.qrc

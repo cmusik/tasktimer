@@ -50,10 +50,31 @@
     </property>
     <addaction name="actionExit" />
    </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>View</string>
+    </property>
+    <addaction name="actionHideDone" />
+   </widget>
+   <widget class="QMenu" name="menuTask" >
+    <property name="title" >
+     <string>Task</string>
+    </property>
+    <addaction name="actionNew" />
+    <addaction name="actionStart" />
+    <addaction name="actionStop" />
+    <addaction name="actionRemove" />
+    <addaction name="actionDone" />
+   </widget>
    <addaction name="menuFile" />
+   <addaction name="menuTask" />
+   <addaction name="menuView" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
+   <property name="windowTitle" >
+    <string>Toolbar</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -70,37 +91,74 @@
    <addaction name="actionDone" />
   </widget>
   <action name="actionExit" >
+   <property name="icon" >
+    <iconset resource="pics.qrc" >:/icons/pics/application-exit.png</iconset>
+   </property>
    <property name="text" >
     <string>Exit</string>
    </property>
   </action>
   <action name="actionNew" >
+   <property name="icon" >
+    <iconset resource="pics.qrc" >:/icons/pics/document-new.png</iconset>
+   </property>
    <property name="text" >
     <string>New</string>
    </property>
   </action>
   <action name="actionStart" >
+   <property name="icon" >
+    <iconset resource="pics.qrc" >:/icons/pics/media-playback-start.png</iconset>
+   </property>
    <property name="text" >
     <string>Start</string>
    </property>
+   <property name="shortcut" >
+    <string>Space</string>
+   </property>
   </action>
   <action name="actionStop" >
+   <property name="icon" >
+    <iconset resource="pics.qrc" >:/icons/pics/media-playback-stop.png</iconset>
+   </property>
    <property name="text" >
     <string>Stop</string>
    </property>
+   <property name="shortcut" >
+    <string>S</string>
+   </property>
   </action>
   <action name="actionRemove" >
+   <property name="icon" >
+    <iconset resource="pics.qrc" >:/icons/pics/edit-delete.png</iconset>
+   </property>
    <property name="text" >
     <string>Remove</string>
    </property>
   </action>
   <action name="actionDone" >
+   <property name="icon" >
+    <iconset resource="pics.qrc" >:/icons/pics/stock_form-checkbox.png</iconset>
+   </property>
    <property name="text" >
     <string>Done</string>
    </property>
   </action>
+  <action name="actionHideDone" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Hide done</string>
+   </property>
+   <property name="shortcut" >
+    <string>T</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="pics.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>actionExit</sender>

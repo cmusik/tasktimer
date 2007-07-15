@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons" >
+        <file>pics/application-exit.png</file>
+        <file>pics/document-new.png</file>
+        <file>pics/edit-delete.png</file>
+        <file>pics/media-playback-start.png</file>
+        <file>pics/media-playback-stop.png</file>
+        <file>pics/stock_form-checkbox.png</file>
+        <file>pics/stock_mail-flag-for-followup-done.png</file>
+    </qresource>
+</RCC>

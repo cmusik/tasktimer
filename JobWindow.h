@@ -1,5 +1,10 @@
+#ifndef JOBWINDOW_H
+#define JOBWINDOW_H
+
 #include <QMainWindow>
 #include "JobModel.h"
+#include "JobFilter.h"
+
 #include "ui_jobtimer.h"
 
 class JobWindow : public QMainWindow, private Ui::JobWindow {
@@ -18,5 +23,8 @@ class JobWindow : public QMainWindow, private Ui::JobWindow {
 	private:
 		void closeEvent(QCloseEvent *);
 
-		JobModel *jobData;
+		JobModel *m_data;
+		JobFilter *m_filter;
 };
+
+#endif

@@ -11,6 +11,11 @@ enum Columns {
 	Time = 2
 };
 
+enum Roles {
+	Active = 32,
+	Done = 33
+};
+
 class JobModel : public QAbstractTableModel {
 	Q_OBJECT
 
@@ -25,9 +30,9 @@ class JobModel : public QAbstractTableModel {
 		bool insertRow(int, const QModelIndex& = QModelIndex());
 		bool removeRows(int, int, const QModelIndex& = QModelIndex());
 		bool removeRow(int, const QModelIndex& = QModelIndex());
-		bool hasActive();
-		bool isActive(const QModelIndex&);
-		bool isDone(const QModelIndex&);
+		bool hasActive() const;
+		bool isActive(const QModelIndex&) const;
+		bool isDone(const QModelIndex&) const;
 		void setDone(bool, const QModelIndex&);
 		QModelIndex index (int, int, const QModelIndex & = QModelIndex() ) const;
 
