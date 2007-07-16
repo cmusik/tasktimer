@@ -13,7 +13,7 @@ MOC_DIR = .moc
 LIBS += -lXss
 
 # Input
-HEADERS += src/Job.h src/JobWindow.h src/JobModel.h src/JobEdit.h src/JobFilter.h
-FORMS += ui/jobtimer.ui
-SOURCES += src/main.cpp src/Job.cpp src/JobWindow.cpp src/JobModel.cpp src/JobEdit.cpp src/JobFilter.cpp
+HEADERS += src/Task.h src/TaskWindow.h src/TaskModel.h src/TaskEdit.h src/TaskFilter.h
+FORMS += ui/tasktimer.ui
+SOURCES += src/main.cpp src/Task.cpp src/TaskWindow.cpp src/TaskModel.cpp src/TaskEdit.cpp src/TaskFilter.cpp
 RESOURCES = pics/pics.qrc

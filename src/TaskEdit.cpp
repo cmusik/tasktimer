@@ -3,16 +3,16 @@
 #include <QDebug>
 #include <QPainter>
 #include <QIntValidator>
-#include "JobEdit.h"
-#include "JobModel.h"
+#include "TaskEdit.h"
+#include "TaskModel.h"
 
 static int objectHeight = 14;
 static const QPointF points[3] = {QPointF(0.0, 0.0), QPointF(10.0, (objectHeight/2)), QPointF(0.0, objectHeight)};
 
-JobEdit::JobEdit(QObject *parent) : QItemDelegate(parent) {
+TaskEdit::TaskEdit(QObject *parent) : QItemDelegate(parent) {
 }
 
-QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const {
+QWidget* TaskEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const {
 	switch(index.column()) {
 		case Name:
 			return new QLineEdit(parent);
@@ -28,7 +28,7 @@ QWidget* JobEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*op
 	}
 }
 
-void JobEdit::setEditorData(QWidget *editor, const QModelIndex &index) const {
+void TaskEdit::setEditorData(QWidget *editor, const QModelIndex &index) const {
 
 	switch(index.column()) {
 		case Name:
@@ -42,7 +42,7 @@ void JobEdit::setEditorData(QWidget *editor, const QModelIndex &index) const {
 	}
 }
 
-void JobEdit::setModelData(QWidget *editor, QAbstractItemModel *model,
+void TaskEdit::setModelData(QWidget *editor, QAbstractItemModel *model,
 		const QModelIndex &index) const {
 	switch(index.column()) {
 		case Name:
@@ -55,11 +55,11 @@ void JobEdit::setModelData(QWidget *editor, QAbstractItemModel *model,
 	}
 }
 
-void JobEdit::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const {
+void TaskEdit::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const {
 	editor->setGeometry(option.rect);
 }
 
-void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const {
+void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const {
 	painter->save();
 
 	bool active = index.model()->data(index, Active).toBool();
@@ -132,6 +132,6 @@ void JobEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, cons
 	//QItemDelegate::paint(painter, option, index);
 }
 
-QSize JobEdit::sizeHint (const QStyleOptionViewItem &option, const QModelIndex &index) const {
+QSize TaskEdit::sizeHint (const QStyleOptionViewItem &option, const QModelIndex &index) const {
 	return QItemDelegate::sizeHint(option, index);
 }

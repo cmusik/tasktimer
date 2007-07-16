@@ -3,11 +3,11 @@
 
 #include <QSortFilterProxyModel>
 
-class JobFilter : public QSortFilterProxyModel {
+class TaskFilter : public QSortFilterProxyModel {
 	Q_OBJECT
 
 	public:
-		JobFilter(QObject * = 0);
+		TaskFilter(QObject * = 0);
 		bool filterAcceptsRow(int, const QModelIndex&) const;
 
 	public slots:

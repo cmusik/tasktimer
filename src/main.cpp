@@ -1,9 +1,9 @@
 #include <QApplication>
-#include "JobWindow.h"
+#include "TaskWindow.h"
 
 int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
-	JobWindow job;
+	TaskWindow job;
 
 	return app.exec();
 }

@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 
-#include "JobModel.h"
-#include "JobFilter.h"
+#include "TaskModel.h"
+#include "TaskFilter.h"
 
 #include "ui_jobtimer.h"
 
@@ -12,18 +12,18 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>
 
-class JobWindow : public QMainWindow, private Ui::JobWindow {
+class TaskWindow : public QMainWindow, private Ui::TaskWindow {
 	Q_OBJECT
 
 	public:
-		JobWindow(QWidget* = 0);
+		TaskWindow(QWidget* = 0);
 
 	private slots:
-		void startJob();
-		void stopJob();
-		void addJob();
-		void removeJob();
-		void doneJob();
+		void startTask();
+		void stopTask();
+		void addTask();
+		void removeTask();
+		void doneTask();
 		void checkIdle();
 		void setPriority(QAction*);
 		void selectionChange(const QModelIndex&);
@@ -31,8 +31,8 @@ class JobWindow : public QMainWindow, private Ui::JobWindow {
 	private:
 		void closeEvent(QCloseEvent *);
 
-		JobModel *m_data;
-		JobFilter *m_filter;
+		TaskModel *m_data;
+		TaskFilter *m_filter;
 		XScreenSaverInfo *m_screensaver;
 		QTimer *m_idleTimer;
 };

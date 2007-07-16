@@ -1,7 +1,7 @@
 #include <QDebug>
-#include "Job.h"
+#include "Task.h"
 
-Job::Job(QObject *parent, QString n) : QObject(parent) {
+Task::Task(QObject *parent, QString n) : QObject(parent) {
 	m_name = n;
 	m_elapsedTime = 0;
 	m_started = NULL;
@@ -9,31 +9,31 @@ Job::Job(QObject *parent, QString n) : QObject(parent) {
 	m_priority = 0;
 }
 
-void Job::start() {
+void Task::start() {
 	if (m_started)
 		stop();
 	else
 		m_started = new QDateTime(QDateTime::currentDateTime());
 }
 
-void Job::stop() {
+void Task::stop() {
 	m_elapsedTime += calculateElapsedTime();
 	delete m_started;
 	m_started = NULL;
 }
 
-void Job::output() {
+void Task::output() {
 }
 
-QString Job::getName() {
+QString Task::getName() {
 	return m_name;
 }
 
-void Job::setName(QString n) {
+void Task::setName(QString n) {
 	m_name = n;
 }
 
-uint Job::calculateElapsedTime() {
+uint Task::calculateElapsedTime() {
 	uint e = 0;
 
 	if (m_started && m_started->isValid()) {
@@ -46,45 +46,45 @@ uint Job::calculateElapsedTime() {
 	return e;
 }
 
-uint Job::duration() {
+uint Task::duration() {
 	return m_elapsedTime+calculateElapsedTime();
 }
 
-void Job::setElapsed(uint t) {
+void Task::setElapsed(uint t) {
 	m_elapsedTime = t;
 }
 
-bool Job::isStarted() {
+bool Task::isStarted() {
 	if (m_started != NULL)
 		return true;
 
 	return false;
 }
 
-bool Job::isDone() {
+bool Task::isDone() {
 	return m_done;
 }
 
-void Job::setDone(bool d) {
+void Task::setDone(bool d) {
 	m_done = d;
 }
 
-void Job::revert(uint t) {
+void Task::revert(uint t) {
 	if (isStarted())
 		m_elapsedTime -= t;
 }
 
-void Job::addTime(int t) {
+void Task::addTime(int t) {
 	if (t < 0 && (uint) (-t) > m_elapsedTime)
 		m_elapsedTime = 0;
 	else
 		m_elapsedTime += t;
 }
 
-int Job::priority() {
+int Task::priority() {
 	return m_priority;
 }
 
-void Job::setPriority(int p) {
+void Task::setPriority(int p) {
 	m_priority = p;
 }

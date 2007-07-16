@@ -6,12 +6,12 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QSettings>
-#include "JobModel.h"
-#include "Job.h"
+#include "TaskModel.h"
+#include "Task.h"
 
 
-JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
-	jobs = new QList<Job*>();
+TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
+	jobs = new QList<Task*>();
 
 	QTimer *timer = new QTimer(this);
 	timer->setInterval(1000);
@@ -19,7 +19,7 @@ JobModel::JobModel(QObject *parent) : QAbstractTableModel(parent) {
 	timer->start();
 }
 
-void JobModel::updateData() {
+void TaskModel::updateData() {
 	for(int i = 0; i < jobs->count(); ++i) {
 		if (jobs->at(i)->isStarted()) {
 			emit dataChanged(index(i, ColumnTime), index(i, ColumnTime));
@@ -27,15 +27,15 @@ void JobModel::updateData() {
 	}
 }
 
-int JobModel::rowCount(const QModelIndex&) const {
+int TaskModel::rowCount(const QModelIndex&) const {
 	return jobs->count();
 }
 
-int JobModel::columnCount(const QModelIndex&) const {
+int TaskModel::columnCount(const QModelIndex&) const {
 	return 4;
 }
 
-QVariant JobModel::data(const QModelIndex& index, int role) const {
+QVariant TaskModel::data(const QModelIndex& index, int role) const {
 	if (role == Active)
 		return QVariant(isActive(index));
 
@@ -65,18 +65,18 @@ QVariant JobModel::data(const QModelIndex& index, int role) const {
 
 }
 
-void JobModel::start(const QModelIndex& index) {
+void TaskModel::start(const QModelIndex& index) {
 	jobs->at(index.row())->start();
 	jobs->at(index.row())->setDone(false);
 	emit dataChanged(this->index(0, 0), this->index(jobs->count()-1, 3));
 }
 
-void JobModel::stop(const QModelIndex& index) {
+void TaskModel::stop(const QModelIndex& index) {
 	jobs->at(index.row())->stop();
 	emit dataChanged(this->index(0, 0), this->index(jobs->count()-1, 3));
 }
 
-QVariant JobModel::headerData (int section, Qt::Orientation orientation, int role) const {
+QVariant TaskModel::headerData (int section, Qt::Orientation orientation, int role) const {
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
@@ -99,7 +99,7 @@ QVariant JobModel::headerData (int section, Qt::Orientation orientation, int rol
 	return QVariant();
 }
 
-Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {
+Qt::ItemFlags TaskModel::flags(const QModelIndex& index) const {
 	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
 
 	if (index.isValid())
@@ -111,7 +111,7 @@ Qt::ItemFlags JobModel::flags(const QModelIndex& index) const {
 
 }
 
-bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+bool TaskModel::setData(const QModelIndex &index, const QVariant &value, int role) {
 	if (!index.isValid())
 		return false;
 	if (role != Qt::EditRole)
@@ -131,21 +131,21 @@ bool JobModel::setData(const QModelIndex &index, const QVariant &value, int role
 	return true;
 }
 
-bool JobModel::insertRows(int pos, int count, const QModelIndex&) {
+bool TaskModel::insertRows(int pos, int count, const QModelIndex&) {
 	beginInsertRows(QModelIndex(), pos+1, pos+count);
 
 	for (int i = 0; i < count; ++i)
-		jobs->insert(pos+1, new Job(this, QString()));
+		jobs->insert(pos+1, new Task(this, QString()));
 
 	endInsertRows();
 	return true;
 }
 
-bool JobModel::insertRow(int pos, const QModelIndex&) {
+bool TaskModel::insertRow(int pos, const QModelIndex&) {
 	return insertRows(pos, 1);
 }
 
-bool JobModel::removeRows(int pos, int count, const QModelIndex&) {
+bool TaskModel::removeRows(int pos, int count, const QModelIndex&) {
 	beginRemoveRows(QModelIndex(), pos, pos+count-1);
 
 	for (int i = 0; i < count; ++i)
@@ -155,16 +155,16 @@ bool JobModel::removeRows(int pos, int count, const QModelIndex&) {
 	return true;
 }
 
-bool JobModel::removeRow(int pos, const QModelIndex&) {
+bool TaskModel::removeRow(int pos, const QModelIndex&) {
 	return removeRows(pos, 1);
 }
 
-void JobModel::save() {
+void TaskModel::save() {
 	QSettings settings("TaskTimer", "tasktimer");
 	settings.clear();
 
 	int i = 0;
-	foreach(Job *j, *jobs) {
+	foreach(Task *j, *jobs) {
 		settings.beginGroup(QString("job%1").arg(QString::number(i), 4, '0'));
 		settings.setValue("name", j->getName());
 		settings.setValue("duration", j->duration());
@@ -175,13 +175,13 @@ void JobModel::save() {
 	}
 }
 
-void JobModel::load() {
+void TaskModel::load() {
 	QSettings settings("TaskTimer", "tasktimer");
 
 	foreach(QString group, settings.childGroups()) {
 		settings.beginGroup(group);
 
-		Job *j = new Job(this, settings.value("name").toString());
+		Task *j = new Task(this, settings.value("name").toString());
 		j->setElapsed(settings.value("duration").toUInt());
 		j->setDone(settings.value("status").toBool());
 		j->setPriority(settings.value("priority").toInt());
@@ -191,60 +191,60 @@ void JobModel::load() {
 	}
 }
 
-bool JobModel::hasActive() const {
-	foreach(Job *j, *jobs) {
+bool TaskModel::hasActive() const {
+	foreach(Task *j, *jobs) {
 		if (j->isStarted())
 			return true;
 	}
 	return false;
 }
 
-bool JobModel::isActive(const QModelIndex &index) const {
+bool TaskModel::isActive(const QModelIndex &index) const {
 	return jobs->at(index.row())->isStarted();
 }
 
-Qt::DropActions JobModel::supportedDropActions() const
+Qt::DropActions TaskModel::supportedDropActions() const
 {
 	return  Qt::CopyAction| Qt::MoveAction;
 }
 
-Qt::DropActions JobModel::supportedDragActions() const
+Qt::DropActions TaskModel::supportedDragActions() const
 {
 	return  Qt::CopyAction | Qt::MoveAction;
 }
 
-bool JobModel::isDone(const QModelIndex &index) const {
+bool TaskModel::isDone(const QModelIndex &index) const {
 	return jobs->at(index.row())->isDone();
 }
 
-void JobModel::setDone(bool d, const QModelIndex &index) {
+void TaskModel::setDone(bool d, const QModelIndex &index) {
 	jobs->at(index.row())->stop();
 	jobs->at(index.row())->setDone(d);
 	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
 }
 
-QModelIndex JobModel::index (int row, int column, const QModelIndex &/*parent*/) const {
+QModelIndex TaskModel::index (int row, int column, const QModelIndex &/*parent*/) const {
 	return createIndex(row, column, jobs->at(row));
 }
 
-void JobModel::stopAll() {
-	foreach(Job *j, *jobs) {
+void TaskModel::stopAll() {
+	foreach(Task *j, *jobs) {
 		j->stop();
 	}
 	emit dataChanged(index(0, ColumnTime), index(jobs->count(), ColumnTime));
 }
 
-void JobModel::revertActive(uint t) {
-	foreach(Job *j, *jobs) {
+void TaskModel::revertActive(uint t) {
+	foreach(Task *j, *jobs) {
 			j->revert(t);
 	}
 	emit dataChanged(index(0, ColumnTime), index(jobs->count(), ColumnTime));
 }
 
-int JobModel::priority(const QModelIndex& index) const {
+int TaskModel::priority(const QModelIndex& index) const {
 	return jobs->at(index.row())->priority();
 }
 
-void JobModel::setPriority(int value, const QModelIndex& index) {
+void TaskModel::setPriority(int value, const QModelIndex& index) {
 	jobs->at(index.row())->setPriority(value);
 }

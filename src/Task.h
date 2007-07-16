@@ -6,11 +6,11 @@
 #include <QString>
 #include <QDateTime>
 
-class Job : public QObject {
+class Task : public QObject {
 	Q_OBJECT
 
 	public:
-		Job(QObject* = 0, QString = "");
+		Task(QObject* = 0, QString = "");
 
 		void start();
 		void stop();

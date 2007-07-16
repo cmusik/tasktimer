@@ -3,7 +3,7 @@
 
 #include <QList>
 #include <QAbstractTableModel>
-#include "Job.h"
+#include "Task.h"
 
 enum Columns {
 	Counter = 0,
@@ -17,13 +17,13 @@ enum Roles {
 	Done = 33
 };
 
-class JobModel : public QAbstractTableModel {
+class TaskModel : public QAbstractTableModel {
 	Q_OBJECT
 
 	public:
-		JobModel(QObject* = 0);
+		TaskModel(QObject* = 0);
 
-		QList<Job*> *jobs;
+		QList<Task*> *jobs;
 
 		void start(const QModelIndex&);
 		void stop(const QModelIndex&);

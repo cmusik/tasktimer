@@ -3,11 +3,11 @@
 
 #include <QItemDelegate>
 
-class JobEdit : public QItemDelegate {
+class TaskEdit : public QItemDelegate {
 	Q_OBJECT
 
 	public:
-		JobEdit(QObject* = 0);
+		TaskEdit(QObject* = 0);
 
 		QWidget *createEditor(QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
 

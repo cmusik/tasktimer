@@ -10,21 +10,19 @@
 #include <QActionGroup>
 #include <QSettings>
 
-#include "JobWindow.h"
-#include "JobEdit.h"
+#include "TaskWindow.h"
+#include "TaskEdit.h"
 
-
-
-JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
+TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	setupUi(this);
-	m_data = new JobModel(this);
+	m_data = new TaskModel(this);
 	m_data->load();
 
-	m_filter = new JobFilter(this);
+	m_filter = new TaskFilter(this);
 	m_filter->setSourceModel(m_data);
 	jobTable->setModel(m_filter);
 
-	JobEdit *delegeate = new JobEdit(this);
+	TaskEdit *delegeate = new TaskEdit(this);
 	jobTable->setItemDelegate(delegeate);
 
 	m_screensaver = XScreenSaverAllocInfo();
@@ -34,15 +32,15 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 
 	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(checkIdle()));
 
-	connect(actionStart, SIGNAL(activated()), this, SLOT(startJob()));
-	connect(actionStop, SIGNAL(activated()), this, SLOT(stopJob()));
+	connect(actionStart, SIGNAL(activated()), this, SLOT(startTask()));
+	connect(actionStop, SIGNAL(activated()), this, SLOT(stopTask()));
 
 	connect(actionStopAll, SIGNAL(activated()), m_data, SLOT(stopAll()));
 	connect(actionStopAll, SIGNAL(activated()), m_idleTimer, SLOT(stop()));
 
-	connect(actionNew, SIGNAL(activated()), this, SLOT(addJob()));
-	connect(actionRemove, SIGNAL(activated()), this, SLOT(removeJob()));
-	connect(actionDone, SIGNAL(activated()), this, SLOT(doneJob()));
+	connect(actionNew, SIGNAL(activated()), this, SLOT(addTask()));
+	connect(actionRemove, SIGNAL(activated()), this, SLOT(removeTask()));
+	connect(actionDone, SIGNAL(activated()), this, SLOT(doneTask()));
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
 
 	jobTable->setSelectionModel(new QItemSelectionModel(m_filter));
@@ -87,7 +85,7 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	show();
 }
 
-void JobWindow::startJob() {
+void TaskWindow::startTask() {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
@@ -96,7 +94,7 @@ void JobWindow::startJob() {
 	}
 }
 
-void JobWindow::stopJob() {
+void TaskWindow::stopTask() {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
@@ -105,7 +103,7 @@ void JobWindow::stopJob() {
 	}
 }
 
-void JobWindow::addJob() {
+void TaskWindow::addTask() {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
 	int pos = -1;
 	if (selected.count())
@@ -118,7 +116,7 @@ void JobWindow::addJob() {
 	jobTable->resizeColumnToContents(ColumnTime);
 }
 
-void JobWindow::removeJob() {
+void TaskWindow::removeTask() {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		int pos = m_filter->mapToSource(selected.at(0)).row();
@@ -126,7 +124,7 @@ void JobWindow::removeJob() {
 	}
 }
 
-void JobWindow::closeEvent(QCloseEvent *event) {
+void TaskWindow::closeEvent(QCloseEvent *event) {
 	if (m_data->hasActive()) {
 		QMessageBox::StandardButton ret;
 		ret = QMessageBox::question(this, tr("Quit TaskTimer?"),
@@ -148,7 +146,7 @@ void JobWindow::closeEvent(QCloseEvent *event) {
 	event->accept();
 }
 
-void JobWindow::doneJob() {
+void TaskWindow::doneTask() {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
@@ -158,7 +156,7 @@ void JobWindow::doneJob() {
 	}
 }
 
-void JobWindow::checkIdle() {
+void TaskWindow::checkIdle() {
 	if (!m_data->hasActive()) {
 		m_idleTimer->stop();
 		return;
@@ -185,7 +183,7 @@ void JobWindow::checkIdle() {
 	}
 }
 
-void JobWindow::setPriority(QAction *action) {
+void TaskWindow::setPriority(QAction *action) {
 	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
@@ -193,7 +191,7 @@ void JobWindow::setPriority(QAction *action) {
 	}
 }
 
-void JobWindow::selectionChange(const QModelIndex &index) {
+void TaskWindow::selectionChange(const QModelIndex &index) {
 	if (!index.isValid())
 		return;
 	const QModelIndex &i = m_filter->mapToSource(index);
