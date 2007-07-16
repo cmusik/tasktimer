@@ -1,5 +1,5 @@
-#ifndef JOB_H
-#define JOB_H
+#ifndef TASK_H
+#define TASK_H
 
 #include <QObject>
 #include <QStack>

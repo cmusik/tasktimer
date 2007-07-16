@@ -1,5 +1,5 @@
-#ifndef JOBFILTER_H
-#define JOBFILTER_H
+#ifndef TASKFILTER_H
+#define TASKFILTER_H
 
 #include <QSortFilterProxyModel>
 

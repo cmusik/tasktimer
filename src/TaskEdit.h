@@ -1,5 +1,5 @@
-#ifndef JOBEDIT_H
-#define JOBEDIT_H
+#ifndef TASKEDIT_H
+#define TASKEDIT_H
 
 #include <QItemDelegate>
 

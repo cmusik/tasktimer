@@ -1,12 +1,12 @@
-#ifndef JOBWINDOW_H
-#define JOBWINDOW_H
+#ifndef TASKWINDOW_H
+#define TASKWINDOW_H
 
 #include <QMainWindow>
 
 #include "TaskModel.h"
 #include "TaskFilter.h"
 
-#include "ui_jobtimer.h"
+#include "ui_tasktimer.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

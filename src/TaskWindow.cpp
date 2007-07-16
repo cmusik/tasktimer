@@ -20,10 +20,10 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 
 	m_filter = new TaskFilter(this);
 	m_filter->setSourceModel(m_data);
-	jobTable->setModel(m_filter);
+	taskTable->setModel(m_filter);
 
 	TaskEdit *delegeate = new TaskEdit(this);
-	jobTable->setItemDelegate(delegeate);
+	taskTable->setItemDelegate(delegeate);
 
 	m_screensaver = XScreenSaverAllocInfo();
 
@@ -43,15 +43,15 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionDone, SIGNAL(activated()), this, SLOT(doneTask()));
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
 
-	jobTable->setSelectionModel(new QItemSelectionModel(m_filter));
-	connect(jobTable->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectionChange(const QModelIndex&)));
-	jobTable->resizeColumnToContents(Counter);
-	jobTable->resizeColumnToContents(Priority);
-	jobTable->resizeColumnToContents(ColumnTime);
-	jobTable->horizontalHeader()->setResizeMode(Counter, QHeaderView::Fixed);
-	jobTable->horizontalHeader()->setResizeMode(Priority, QHeaderView::Fixed);
-	jobTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
-	jobTable->verticalHeader()->hide();
+	taskTable->setSelectionModel(new QItemSelectionModel(m_filter));
+	connect(taskTable->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectionChange(const QModelIndex&)));
+	taskTable->resizeColumnToContents(Counter);
+	taskTable->resizeColumnToContents(Priority);
+	taskTable->resizeColumnToContents(ColumnTime);
+	taskTable->horizontalHeader()->setResizeMode(Counter, QHeaderView::Fixed);
+	taskTable->horizontalHeader()->setResizeMode(Priority, QHeaderView::Fixed);
+	taskTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
+	taskTable->verticalHeader()->hide();
 
 
 	QActionGroup *priority = new QActionGroup(this);
@@ -86,7 +86,7 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 }
 
 void TaskWindow::startTask() {
-	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
@@ -95,7 +95,7 @@ void TaskWindow::startTask() {
 }
 
 void TaskWindow::stopTask() {
-	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
@@ -104,20 +104,20 @@ void TaskWindow::stopTask() {
 }
 
 void TaskWindow::addTask() {
-	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	int pos = -1;
 	if (selected.count())
 		pos = m_filter->mapToSource(selected.at(0)).row();
 
 	m_data->insertRows(pos, 1);
 
-	jobTable->resizeColumnToContents(Counter);
-	jobTable->resizeColumnToContents(Priority);
-	jobTable->resizeColumnToContents(ColumnTime);
+	taskTable->resizeColumnToContents(Counter);
+	taskTable->resizeColumnToContents(Priority);
+	taskTable->resizeColumnToContents(ColumnTime);
 }
 
 void TaskWindow::removeTask() {
-	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		int pos = m_filter->mapToSource(selected.at(0)).row();
 		m_data->removeRows(pos, 1);
@@ -128,7 +128,7 @@ void TaskWindow::closeEvent(QCloseEvent *event) {
 	if (m_data->hasActive()) {
 		QMessageBox::StandardButton ret;
 		ret = QMessageBox::question(this, tr("Quit TaskTimer?"),
-				tr("There are running jobs. Do you want to save and quit?"),
+				tr("There are running tasks. Do you want to save and quit?"),
 				QMessageBox::Yes | QMessageBox::No);
 
 		if (ret != QMessageBox::Yes) {
@@ -147,7 +147,7 @@ void TaskWindow::closeEvent(QCloseEvent *event) {
 }
 
 void TaskWindow::doneTask() {
-	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
@@ -184,7 +184,7 @@ void TaskWindow::checkIdle() {
 }
 
 void TaskWindow::setPriority(QAction *action) {
-	QModelIndexList selected = jobTable->selectionModel()->selectedRows();
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 		m_data->setPriority(action->data().toInt(), index);

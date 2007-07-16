@@ -1,5 +1,5 @@
-#ifndef JOBMODEL_H
-#define JOBMODEL_H
+#ifndef TASKMODEL_H
+#define TASKMODEL_H
 
 #include <QList>
 #include <QAbstractTableModel>
@@ -23,7 +23,7 @@ class TaskModel : public QAbstractTableModel {
 	public:
 		TaskModel(QObject* = 0);
 
-		QList<Task*> *jobs;
+		QList<Task*> *tasks;
 
 		void start(const QModelIndex&);
 		void stop(const QModelIndex&);

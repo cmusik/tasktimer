@@ -11,7 +11,7 @@
 
 
 TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
-	jobs = new QList<Task*>();
+	tasks = new QList<Task*>();
 
 	QTimer *timer = new QTimer(this);
 	timer->setInterval(1000);
@@ -20,15 +20,15 @@ TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
 }
 
 void TaskModel::updateData() {
-	for(int i = 0; i < jobs->count(); ++i) {
-		if (jobs->at(i)->isStarted()) {
+	for(int i = 0; i < tasks->count(); ++i) {
+		if (tasks->at(i)->isStarted()) {
 			emit dataChanged(index(i, ColumnTime), index(i, ColumnTime));
 		}
 	}
 }
 
 int TaskModel::rowCount(const QModelIndex&) const {
-	return jobs->count();
+	return tasks->count();
 }
 
 int TaskModel::columnCount(const QModelIndex&) const {
@@ -55,25 +55,25 @@ QVariant TaskModel::data(const QModelIndex& index, int role) const {
 		case Counter:
 			return index.row()+1;
 		case Priority:
-			return jobs->at(index.row())->priority();
+			return tasks->at(index.row())->priority();
 		case Name:
-			return jobs->at(index.row())->getName();
+			return tasks->at(index.row())->getName();
 		case ColumnTime:
-			return QTime().addSecs(jobs->at(index.row())->duration()).toString("HH:mm:ss");
+			return QTime().addSecs(tasks->at(index.row())->duration()).toString("HH:mm:ss");
 	}
 	return QVariant();
 
 }
 
 void TaskModel::start(const QModelIndex& index) {
-	jobs->at(index.row())->start();
-	jobs->at(index.row())->setDone(false);
-	emit dataChanged(this->index(0, 0), this->index(jobs->count()-1, 3));
+	tasks->at(index.row())->start();
+	tasks->at(index.row())->setDone(false);
+	emit dataChanged(this->index(0, 0), this->index(tasks->count()-1, 3));
 }
 
 void TaskModel::stop(const QModelIndex& index) {
-	jobs->at(index.row())->stop();
-	emit dataChanged(this->index(0, 0), this->index(jobs->count()-1, 3));
+	tasks->at(index.row())->stop();
+	emit dataChanged(this->index(0, 0), this->index(tasks->count()-1, 3));
 }
 
 QVariant TaskModel::headerData (int section, Qt::Orientation orientation, int role) const {
@@ -119,10 +119,10 @@ bool TaskModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
 	switch(index.column()) {
 		case Name:
-			jobs->at(index.row())->setName(value.toString());
+			tasks->at(index.row())->setName(value.toString());
 			break;
 		case ColumnTime:
-			jobs->at(index.row())->addTime(value.toInt()*60);
+			tasks->at(index.row())->addTime(value.toInt()*60);
 			break;
 		default:
 			return false;
@@ -135,7 +135,7 @@ bool TaskModel::insertRows(int pos, int count, const QModelIndex&) {
 	beginInsertRows(QModelIndex(), pos+1, pos+count);
 
 	for (int i = 0; i < count; ++i)
-		jobs->insert(pos+1, new Task(this, QString()));
+		tasks->insert(pos+1, new Task(this, QString()));
 
 	endInsertRows();
 	return true;
@@ -149,7 +149,7 @@ bool TaskModel::removeRows(int pos, int count, const QModelIndex&) {
 	beginRemoveRows(QModelIndex(), pos, pos+count-1);
 
 	for (int i = 0; i < count; ++i)
-		jobs->removeAt(pos);
+		tasks->removeAt(pos);
 
 	endRemoveRows();
 	return true;
@@ -164,8 +164,8 @@ void TaskModel::save() {
 	settings.clear();
 
 	int i = 0;
-	foreach(Task *j, *jobs) {
-		settings.beginGroup(QString("job%1").arg(QString::number(i), 4, '0'));
+	foreach(Task *j, *tasks) {
+		settings.beginGroup(QString("task%1").arg(QString::number(i), 4, '0'));
 		settings.setValue("name", j->getName());
 		settings.setValue("duration", j->duration());
 		settings.setValue("status", j->isDone());
@@ -185,14 +185,14 @@ void TaskModel::load() {
 		j->setElapsed(settings.value("duration").toUInt());
 		j->setDone(settings.value("status").toBool());
 		j->setPriority(settings.value("priority").toInt());
-		jobs->append(j);
+		tasks->append(j);
 
 		settings.endGroup();
 	}
 }
 
 bool TaskModel::hasActive() const {
-	foreach(Task *j, *jobs) {
+	foreach(Task *j, *tasks) {
 		if (j->isStarted())
 			return true;
 	}
@@ -200,7 +200,7 @@ bool TaskModel::hasActive() const {
 }
 
 bool TaskModel::isActive(const QModelIndex &index) const {
-	return jobs->at(index.row())->isStarted();
+	return tasks->at(index.row())->isStarted();
 }
 
 Qt::DropActions TaskModel::supportedDropActions() const
@@ -214,37 +214,37 @@ Qt::DropActions TaskModel::supportedDragActions() const
 }
 
 bool TaskModel::isDone(const QModelIndex &index) const {
-	return jobs->at(index.row())->isDone();
+	return tasks->at(index.row())->isDone();
 }
 
 void TaskModel::setDone(bool d, const QModelIndex &index) {
-	jobs->at(index.row())->stop();
-	jobs->at(index.row())->setDone(d);
-	emit dataChanged(createIndex(0, 0), createIndex(2, jobs->count()-1));
+	tasks->at(index.row())->stop();
+	tasks->at(index.row())->setDone(d);
+	emit dataChanged(createIndex(0, 0), createIndex(2, tasks->count()-1));
 }
 
 QModelIndex TaskModel::index (int row, int column, const QModelIndex &/*parent*/) const {
-	return createIndex(row, column, jobs->at(row));
+	return createIndex(row, column, tasks->at(row));
 }
 
 void TaskModel::stopAll() {
-	foreach(Task *j, *jobs) {
+	foreach(Task *j, *tasks) {
 		j->stop();
 	}
-	emit dataChanged(index(0, ColumnTime), index(jobs->count(), ColumnTime));
+	emit dataChanged(index(0, ColumnTime), index(tasks->count(), ColumnTime));
 }
 
 void TaskModel::revertActive(uint t) {
-	foreach(Task *j, *jobs) {
+	foreach(Task *j, *tasks) {
 			j->revert(t);
 	}
-	emit dataChanged(index(0, ColumnTime), index(jobs->count(), ColumnTime));
+	emit dataChanged(index(0, ColumnTime), index(tasks->count(), ColumnTime));
 }
 
 int TaskModel::priority(const QModelIndex& index) const {
-	return jobs->at(index.row())->priority();
+	return tasks->at(index.row())->priority();
 }
 
 void TaskModel::setPriority(int value, const QModelIndex& index) {
-	jobs->at(index.row())->setPriority(value);
+	tasks->at(index.row())->setPriority(value);
 }
