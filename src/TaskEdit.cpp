@@ -64,7 +64,7 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 
 	bool active = index.model()->data(index, Active).toBool();
 	bool done = index.model()->data(index, Done).toBool();
-	int priority = index.model()->data(index, 34).toInt();
+	int priority = index.model()->data(index).toInt();
 
 	painter->setRenderHint(QPainter::Antialiasing, true);
 	if (option.state & QStyle::State_Selected) {

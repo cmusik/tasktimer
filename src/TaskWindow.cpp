@@ -65,10 +65,14 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	actionPrio2->setData(2);
 	actionPrio3->setData(3);
 
-	//QMenu *stopMenu = new QMenu(this);
-	//actionStopAll->setShortcut(Qt::Key_Escape);
-	//stopMenu->addAction(actionStopAll);
-	//actionStop->setMenu(stopMenu);
+	taskTable->addAction(actionStart);
+	QAction *sep = new QAction("Priority", this);
+	sep->setSeparator(true);
+	taskTable->addAction(sep);
+	taskTable->addAction(actionPrio0);
+	taskTable->addAction(actionPrio1);
+	taskTable->addAction(actionPrio2);
+	taskTable->addAction(actionPrio3);
 
 	QSettings settings("TaskTimer", "tasktimer");
 	m_filter->filterDone(settings.value("hide_done").toBool());
