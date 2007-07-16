@@ -75,7 +75,7 @@ void Job::revert(uint t) {
 }
 
 void Job::addTime(int t) {
-	if (t < 0 && (uint) t > m_elapsedTime)
+	if (t < 0 && (uint) (-t) > m_elapsedTime)
 		m_elapsedTime = 0;
 	else
 		m_elapsedTime += t;
@@ -87,5 +87,4 @@ int Job::priority() {
 
 void Job::setPriority(int p) {
 	m_priority = p;
-	//m_priority %= 4;
 }

@@ -27,13 +27,22 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	JobEdit *delegeate = new JobEdit(this);
 	jobTable->setItemDelegate(delegeate);
 
+	m_screensaver = XScreenSaverAllocInfo();
+
+	m_idleTimer= new QTimer(this);
+	m_idleTimer->setInterval(1000);
+
+	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(checkIdle()));
+
 	connect(actionStart, SIGNAL(activated()), this, SLOT(startJob()));
 	connect(actionStop, SIGNAL(activated()), this, SLOT(stopJob()));
+
+	connect(actionStopAll, SIGNAL(activated()), m_data, SLOT(stopAll()));
+	connect(actionStopAll, SIGNAL(activated()), m_idleTimer, SLOT(stop()));
+
 	connect(actionNew, SIGNAL(activated()), this, SLOT(addJob()));
 	connect(actionRemove, SIGNAL(activated()), this, SLOT(removeJob()));
 	connect(actionDone, SIGNAL(activated()), this, SLOT(doneJob()));
-	connect(actionStopAll, SIGNAL(activated()), m_data, SLOT(stopAll()));
-
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
 
 	jobTable->setSelectionModel(new QItemSelectionModel(m_filter));
@@ -46,11 +55,6 @@ JobWindow::JobWindow(QWidget *parent) : QMainWindow(parent) {
 	jobTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
 	jobTable->verticalHeader()->hide();
 
-	m_screensaver = XScreenSaverAllocInfo();
-
-	m_idleTimer= new QTimer(this);
-	m_idleTimer->setInterval(1000);
-	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(checkIdle()));
 
 	QActionGroup *priority = new QActionGroup(this);
 	priority->addAction(actionPrio0);
@@ -89,7 +93,6 @@ void JobWindow::startJob() {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
 		m_data->start(index);
-		m_idleTimer->start();
 	}
 }
 
@@ -99,7 +102,6 @@ void JobWindow::stopJob() {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
 		m_data->stop(index);
-		m_idleTimer->stop();
 	}
 }
 
@@ -157,6 +159,10 @@ void JobWindow::doneJob() {
 }
 
 void JobWindow::checkIdle() {
+	if (!m_data->hasActive()) {
+		m_idleTimer->stop();
+		return;
+	}
 	XScreenSaverQueryInfo(QX11Info::display (), QX11Info::appRootWindow(), m_screensaver);
 
 	int idleMinutes = (m_screensaver->idle/1000)/60;
