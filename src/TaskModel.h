@@ -39,6 +39,8 @@ class TaskModel : public QAbstractTableModel {
 		void revertActive(uint);
 		int priority(const QModelIndex&) const;
 		void setPriority(int, const QModelIndex&);
+		int rowCount(const QModelIndex&) const;
+		int columnCount(const QModelIndex&) const;
 
 	public slots:
 		void save();
@@ -49,8 +51,6 @@ class TaskModel : public QAbstractTableModel {
 		void updateData();
 
 	private:
-		int rowCount(const QModelIndex&) const;
-		int columnCount(const QModelIndex&) const;
 		QVariant data(const QModelIndex&, int) const;
 		QVariant headerData (int, Qt::Orientation, int) const;
 		Qt::ItemFlags flags(const QModelIndex&) const;

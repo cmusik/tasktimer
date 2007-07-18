@@ -108,12 +108,7 @@ void TaskWindow::stopTask() {
 }
 
 void TaskWindow::addTask() {
-	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
-	int pos = -1;
-	if (selected.count())
-		pos = m_filter->mapToSource(selected.at(0)).row();
-
-	m_data->insertRows(pos, 1);
+	m_data->insertRows(m_data->rowCount(QModelIndex())-1, 1);
 
 	taskTable->resizeColumnToContents(Counter);
 	taskTable->resizeColumnToContents(Priority);
