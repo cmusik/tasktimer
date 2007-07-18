@@ -95,6 +95,10 @@ void TaskWindow::startTask() {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
 		m_data->start(index);
+		if (m_data->hasActive())
+			m_idleTimer->start();
+		else
+			m_idleTimer->stop();
 	}
 }
 
@@ -156,10 +160,6 @@ void TaskWindow::doneTask() {
 }
 
 void TaskWindow::checkIdle() {
-	if (!m_data->hasActive()) {
-		m_idleTimer->stop();
-		return;
-	}
 	XScreenSaverQueryInfo(QX11Info::display (), QX11Info::appRootWindow(), m_screensaver);
 
 	int idleMinutes = (m_screensaver->idle/1000)/60;
