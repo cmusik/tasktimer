@@ -1,7 +1,7 @@
 #include <QDebug>
 #include "Task.h"
 
-Task::Task(QObject *parent, QString n) : QObject(parent) {
+Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_name = n;
 	m_elapsedTime = 0;
 	m_started = NULL;
@@ -22,10 +22,7 @@ void Task::stop() {
 	m_started = NULL;
 }
 
-void Task::output() {
-}
-
-QString Task::getName() {
+QString Task::name() const {
 	return m_name;
 }
 
@@ -54,14 +51,14 @@ void Task::setElapsed(uint t) {
 	m_elapsedTime = t;
 }
 
-bool Task::isStarted() {
+bool Task::isStarted() const {
 	if (m_started != NULL)
 		return true;
 
 	return false;
 }
 
-bool Task::isDone() {
+bool Task::isDone() const {
 	return m_done;
 }
 
@@ -81,7 +78,7 @@ void Task::addTime(int t) {
 		m_elapsedTime += t;
 }
 
-int Task::priority() {
+int Task::priority() const {
 	return m_priority;
 }
 

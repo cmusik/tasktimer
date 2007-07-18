@@ -57,7 +57,7 @@ QVariant TaskModel::data(const QModelIndex& index, int role) const {
 		case Priority:
 			return tasks->at(index.row())->priority();
 		case Name:
-			return tasks->at(index.row())->getName();
+			return tasks->at(index.row())->name();
 		case ColumnTime:
 			return QTime().addSecs(tasks->at(index.row())->duration()).toString("HH:mm:ss");
 	}
@@ -135,7 +135,7 @@ bool TaskModel::insertRows(int pos, int count, const QModelIndex&) {
 	beginInsertRows(QModelIndex(), pos+1, pos+count);
 
 	for (int i = 0; i < count; ++i)
-		tasks->insert(pos+1, new Task(this, QString()));
+		tasks->insert(pos+1, new Task(QString(), this));
 
 	endInsertRows();
 	return true;
@@ -166,7 +166,7 @@ void TaskModel::save() {
 	int i = 0;
 	foreach(Task *j, *tasks) {
 		settings.beginGroup(QString("task%1").arg(QString::number(i), 4, '0'));
-		settings.setValue("name", j->getName());
+		settings.setValue("name", j->name());
 		settings.setValue("duration", j->duration());
 		settings.setValue("status", j->isDone());
 		settings.setValue("priority", j->priority());
@@ -181,7 +181,7 @@ void TaskModel::load() {
 	foreach(QString group, settings.childGroups()) {
 		settings.beginGroup(group);
 
-		Task *j = new Task(this, settings.value("name").toString());
+		Task *j = new Task(settings.value("name").toString(), this);
 		j->setElapsed(settings.value("duration").toUInt());
 		j->setDone(settings.value("status").toBool());
 		j->setPriority(settings.value("priority").toInt());

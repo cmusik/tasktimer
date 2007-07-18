@@ -10,21 +10,20 @@ class Task : public QObject {
 	Q_OBJECT
 
 	public:
-		Task(QObject* = 0, QString = "");
+		Task(QString = "", QObject* = 0);
 
 		void start();
 		void stop();
-		void output();
-		QString getName();
+		QString name() const;
 		void setName(QString);
 		uint duration();
 		void setElapsed(uint);
-		bool isStarted();
-		bool isDone();
+		bool isStarted() const;
+		bool isDone() const;
 		void setDone(bool);
 		void revert(uint);
 		void addTime(int);
-		int priority();
+		int priority() const;
 		void setPriority(int);
 
 	private:
