@@ -103,6 +103,7 @@ void TaskWindow::startTask() {
 			m_idleTimer->start();
 		else
 			m_idleTimer->stop();
+		updateStartAction(index);
 	}
 }
 
@@ -213,6 +214,7 @@ void TaskWindow::selectionChange(const QModelIndex &index) {
 			actionPrio3->setChecked(true);
 			break;
 	}
+	updateStartAction(i);
 }
 
 void TaskWindow::startNewSession() {
@@ -221,5 +223,19 @@ void TaskWindow::startNewSession() {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
 		m_data->startNewSession(index);
+	}
+}
+
+void TaskWindow::updateStartAction(const QModelIndex& index) {
+	if (!index.isValid())
+		return;
+
+	if (m_data->isActive(index)) {
+		actionStart->setIcon(QIcon(QString(":/icons/media-playback-pause.png")));
+		actionStart->setText("Stop");
+	}
+	else {
+		actionStart->setIcon(QIcon(QString(":/icons/media-playback-start.png")));
+		actionStart->setText("Start");
 	}
 }

@@ -31,6 +31,7 @@ class TaskWindow : public QMainWindow, private Ui::TaskWindow {
 
 	private:
 		void closeEvent(QCloseEvent *);
+		void updateStartAction(const QModelIndex&);
 
 		TaskModel *m_data;
 		TaskFilter *m_filter;
