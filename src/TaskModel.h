@@ -9,7 +9,8 @@ enum Columns {
 	Counter = 0,
 	Priority = 1,
 	Name = 2,
-	ColumnTime = 3
+	TotalTime = 3,
+	SessionTime = 4
 };
 
 enum Roles {
@@ -41,6 +42,7 @@ class TaskModel : public QAbstractTableModel {
 		void setPriority(int, const QModelIndex&);
 		int rowCount(const QModelIndex&) const;
 		int columnCount(const QModelIndex&) const;
+		void startNewSession(const QModelIndex&);
 
 	public slots:
 		void save();

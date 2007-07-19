@@ -16,7 +16,8 @@ QWidget* TaskEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 	switch(index.column()) {
 		case Name:
 			return new QLineEdit(parent);
-		case ColumnTime:
+		case TotalTime:
+		case SessionTime:
 			{
 			QLineEdit *lineEdit = new QLineEdit(parent);
 			const QIntValidator *v = new QIntValidator(parent);
@@ -46,7 +47,8 @@ void TaskEdit::setModelData(QWidget *editor, QAbstractItemModel *model,
 		const QModelIndex &index) const {
 	switch(index.column()) {
 		case Name:
-		case ColumnTime:
+		case TotalTime:
+		case SessionTime:
 			{
 				QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
 				QString value = lineEdit->text();
@@ -128,8 +130,6 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 	else
 		painter->drawText(option.rect.x()+5, option.rect.y()+((option.rect.height()+option.fontMetrics.xHeight())/2), index.model()->data(index).toString());
 	painter->restore();
-
-	//QItemDelegate::paint(painter, option, index);
 }
 
 QSize TaskEdit::sizeHint (const QStyleOptionViewItem &option, const QModelIndex &index) const {

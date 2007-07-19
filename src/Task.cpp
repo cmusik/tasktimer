@@ -3,7 +3,8 @@
 
 Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_name = n;
-	m_elapsedTime = 0;
+	m_totalElapsedTime = 0;
+	m_sessionElapsedTime = 0;
 	m_started = NULL;
 	m_done = false;
 	m_priority = 0;
@@ -17,7 +18,9 @@ void Task::start() {
 }
 
 void Task::stop() {
-	m_elapsedTime += calculateElapsedTime();
+	uint ctime = calculateElapsedTime();
+	m_totalElapsedTime += ctime;
+	m_sessionElapsedTime += ctime;
 	delete m_started;
 	m_started = NULL;
 }
@@ -43,12 +46,20 @@ uint Task::calculateElapsedTime() {
 	return e;
 }
 
-uint Task::duration() {
-	return m_elapsedTime+calculateElapsedTime();
+uint Task::totalElapsed() {
+	return m_totalElapsedTime+calculateElapsedTime();
 }
 
-void Task::setElapsed(uint t) {
-	m_elapsedTime = t;
+uint Task::sessionElapsed() {
+	return m_sessionElapsedTime+calculateElapsedTime();
+}
+
+void Task::setTotalElapsed(uint t) {
+	m_totalElapsedTime = t;
+}
+
+void Task::setSessionElapsed(uint t) {
+	m_sessionElapsedTime = t;
 }
 
 bool Task::isStarted() const {
@@ -67,15 +78,43 @@ void Task::setDone(bool d) {
 }
 
 void Task::revert(uint t) {
-	if (isStarted())
-		m_elapsedTime -= t;
+	if (isStarted()) {
+		stop();
+		m_totalElapsedTime -= t;
+		m_sessionElapsedTime -= t;
+		start();
+	}
 }
 
-void Task::addTime(int t) {
-	if (t < 0 && (uint) (-t) > m_elapsedTime)
-		m_elapsedTime = 0;
+void Task::addSessionTime(int t) {
+	bool started = isStarted();
+	stop();
+
+	if (t < 0 && (uint) (-t) > m_totalElapsedTime)
+		m_totalElapsedTime = 0;
 	else
-		m_elapsedTime += t;
+		m_totalElapsedTime += t;
+
+	if (t < 0 && (uint) (-t) > m_sessionElapsedTime)
+		m_sessionElapsedTime = 0;
+	else
+		m_sessionElapsedTime += t;
+
+	if (started)
+		start();
+}
+
+void Task::addTotalTime(int t) {
+	bool started = isStarted();
+	stop();
+
+	if (t < 0 && (uint) (-t) > m_totalElapsedTime)
+		m_totalElapsedTime = 0;
+	else
+		m_totalElapsedTime += t;
+
+	if (started)
+		start();
 }
 
 int Task::priority() const {
@@ -84,4 +123,12 @@ int Task::priority() const {
 
 void Task::setPriority(int p) {
 	m_priority = p;
+}
+
+void Task::newSession() {
+	bool started = isStarted();
+	stop();
+	m_sessionElapsedTime = 0;
+	if (started)
+		start();
 }

@@ -22,7 +22,7 @@ TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
 void TaskModel::updateData() {
 	for(int i = 0; i < tasks->count(); ++i) {
 		if (tasks->at(i)->isStarted()) {
-			emit dataChanged(index(i, ColumnTime), index(i, ColumnTime));
+			emit dataChanged(index(i, TotalTime), index(i, SessionTime));
 		}
 	}
 }
@@ -32,7 +32,7 @@ int TaskModel::rowCount(const QModelIndex&) const {
 }
 
 int TaskModel::columnCount(const QModelIndex&) const {
-	return 4;
+	return 5;
 }
 
 QVariant TaskModel::data(const QModelIndex& index, int role) const {
@@ -58,8 +58,10 @@ QVariant TaskModel::data(const QModelIndex& index, int role) const {
 			return tasks->at(index.row())->priority();
 		case Name:
 			return tasks->at(index.row())->name();
-		case ColumnTime:
-			return QTime().addSecs(tasks->at(index.row())->duration()).toString("HH:mm:ss");
+		case TotalTime:
+			return QTime().addSecs(tasks->at(index.row())->totalElapsed()).toString("HH:mm:ss");
+		case SessionTime:
+			return QTime().addSecs(tasks->at(index.row())->sessionElapsed()).toString("HH:mm:ss");
 	}
 	return QVariant();
 
@@ -88,8 +90,10 @@ QVariant TaskModel::headerData (int section, Qt::Orientation orientation, int ro
 				return QString("Priority");
 			case Name:
 				return QString("Name");
-			case ColumnTime:
-				return QString("Time");
+			case TotalTime:
+				return QString("Total");
+			case SessionTime:
+				return QString("Session");
 		}
 	}
 	else {
@@ -121,8 +125,11 @@ bool TaskModel::setData(const QModelIndex &index, const QVariant &value, int rol
 		case Name:
 			tasks->at(index.row())->setName(value.toString());
 			break;
-		case ColumnTime:
-			tasks->at(index.row())->addTime(value.toInt()*60);
+		case TotalTime:
+			tasks->at(index.row())->addTotalTime(value.toInt()*60);
+			break;
+		case SessionTime:
+			tasks->at(index.row())->addSessionTime(value.toInt()*60);
 			break;
 		default:
 			return false;
@@ -167,7 +174,8 @@ void TaskModel::save() {
 	foreach(Task *j, *tasks) {
 		settings.beginGroup(QString("task%1").arg(QString::number(i), 4, '0'));
 		settings.setValue("name", j->name());
-		settings.setValue("duration", j->duration());
+		settings.setValue("totalElapsed", j->totalElapsed());
+		settings.setValue("sessionElapsed", j->sessionElapsed());
 		settings.setValue("status", j->isDone());
 		settings.setValue("priority", j->priority());
 		settings.endGroup();
@@ -182,7 +190,8 @@ void TaskModel::load() {
 		settings.beginGroup(group);
 
 		Task *j = new Task(settings.value("name").toString(), this);
-		j->setElapsed(settings.value("duration").toUInt());
+		j->setTotalElapsed(settings.value("totalElapsed").toUInt());
+		j->setSessionElapsed(settings.value("sessionElapsed").toUInt());
 		j->setDone(settings.value("status").toBool());
 		j->setPriority(settings.value("priority").toInt());
 		tasks->append(j);
@@ -231,14 +240,14 @@ void TaskModel::stopAll() {
 	foreach(Task *j, *tasks) {
 		j->stop();
 	}
-	emit dataChanged(index(0, ColumnTime), index(tasks->count(), ColumnTime));
+	emit dataChanged(index(0, TotalTime), index(tasks->count(), SessionTime));
 }
 
 void TaskModel::revertActive(uint t) {
 	foreach(Task *j, *tasks) {
 			j->revert(t);
 	}
-	emit dataChanged(index(0, ColumnTime), index(tasks->count(), ColumnTime));
+	emit dataChanged(index(0, TotalTime), index(tasks->count(), SessionTime));
 }
 
 int TaskModel::priority(const QModelIndex& index) const {
@@ -247,4 +256,9 @@ int TaskModel::priority(const QModelIndex& index) const {
 
 void TaskModel::setPriority(int value, const QModelIndex& index) {
 	tasks->at(index.row())->setPriority(value);
+}
+
+void TaskModel::startNewSession(const QModelIndex &index) {
+	tasks->at(index.row())->newSession();
+	emit dataChanged(this->index(0, TotalTime), this->index(tasks->count(), SessionTime));
 }

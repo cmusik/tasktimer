@@ -68,6 +68,7 @@
     <addaction name="actionStopAll" />
     <addaction name="actionRemove" />
     <addaction name="actionDone" />
+    <addaction name="actionNewSession" />
     <addaction name="separator" />
     <addaction name="actionPrio0" />
     <addaction name="actionPrio1" />
@@ -97,6 +98,7 @@
    <addaction name="actionStopAll" />
    <addaction name="actionRemove" />
    <addaction name="actionDone" />
+   <addaction name="actionNewSession" />
   </widget>
   <action name="actionExit" >
    <property name="icon" >
@@ -201,6 +203,14 @@
    </property>
    <property name="shortcut" >
     <string>S</string>
+   </property>
+  </action>
+  <action name="actionNewSession" >
+   <property name="icon" >
+    <iconset resource="../pics/pics.qrc" >:/icons/stock_compile.png</iconset>
+   </property>
+   <property name="text" >
+    <string>New Session</string>
    </property>
   </action>
  </widget>

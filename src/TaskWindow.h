@@ -27,6 +27,7 @@ class TaskWindow : public QMainWindow, private Ui::TaskWindow {
 		void checkIdle();
 		void setPriority(QAction*);
 		void selectionChange(const QModelIndex&);
+		void startNewSession();
 
 	private:
 		void closeEvent(QCloseEvent *);

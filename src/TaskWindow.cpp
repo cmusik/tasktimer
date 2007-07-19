@@ -42,14 +42,18 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionRemove, SIGNAL(activated()), this, SLOT(removeTask()));
 	connect(actionDone, SIGNAL(activated()), this, SLOT(doneTask()));
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
+	connect(actionNewSession, SIGNAL(activated()), this, SLOT(startNewSession()));
 
 	taskTable->setSelectionModel(new QItemSelectionModel(m_filter));
 	connect(taskTable->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectionChange(const QModelIndex&)));
 	taskTable->resizeColumnToContents(Counter);
 	taskTable->resizeColumnToContents(Priority);
-	taskTable->resizeColumnToContents(ColumnTime);
+	taskTable->resizeColumnToContents(TotalTime);
+	taskTable->resizeColumnToContents(SessionTime);
 	taskTable->horizontalHeader()->setResizeMode(Counter, QHeaderView::Fixed);
 	taskTable->horizontalHeader()->setResizeMode(Priority, QHeaderView::Fixed);
+	taskTable->horizontalHeader()->setResizeMode(TotalTime, QHeaderView::Fixed);
+	taskTable->horizontalHeader()->setResizeMode(SessionTime, QHeaderView::Fixed);
 	taskTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
 	taskTable->verticalHeader()->hide();
 
@@ -116,7 +120,7 @@ void TaskWindow::addTask() {
 
 	taskTable->resizeColumnToContents(Counter);
 	taskTable->resizeColumnToContents(Priority);
-	taskTable->resizeColumnToContents(ColumnTime);
+	taskTable->resizeColumnToContents(TotalTime);
 }
 
 void TaskWindow::removeTask() {
@@ -208,5 +212,14 @@ void TaskWindow::selectionChange(const QModelIndex &index) {
 		case 3:
 			actionPrio3->setChecked(true);
 			break;
+	}
+}
+
+void TaskWindow::startNewSession() {
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
+	if (selected.count() == 1) {
+		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
+
+		m_data->startNewSession(index);
 	}
 }
