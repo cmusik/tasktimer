@@ -125,6 +125,14 @@ void TaskWindow::addTask() {
 }
 
 void TaskWindow::removeTask() {
+	QMessageBox::StandardButton ret;
+	ret = QMessageBox::question(this, tr("Removing Task..."),
+			tr("Do you really want to remove this task?"),
+			QMessageBox::Yes | QMessageBox::No);
+
+	if (ret == QMessageBox::No)
+		return;
+
 	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
 		int pos = m_filter->mapToSource(selected.at(0)).row();
@@ -135,7 +143,7 @@ void TaskWindow::removeTask() {
 void TaskWindow::closeEvent(QCloseEvent *event) {
 	if (m_data->hasActive()) {
 		QMessageBox::StandardButton ret;
-		ret = QMessageBox::question(this, tr("Quit TaskTimer?"),
+		ret = QMessageBox::question(this, tr("Quitting TaskTimer..."),
 				tr("There are running tasks. Do you want to save and quit?"),
 				QMessageBox::Yes | QMessageBox::No);
 
