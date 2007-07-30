@@ -14,9 +14,12 @@ TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
 	tasks = new QList<Task*>();
 
 	QTimer *timer = new QTimer(this);
-	timer->setInterval(1000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateData()));
-	timer->start();
+	timer->start(1000);
+
+	QTimer *savetimer = new QTimer(this);
+	connect(savetimer, SIGNAL(timeout()), this, SLOT(save()));
+	savetimer->start(60000);
 }
 
 void TaskModel::updateData() {
