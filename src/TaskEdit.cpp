@@ -84,6 +84,8 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 	float h = option.rect.height();
 	float y = option.rect.y()+((h-objectHeight)/2);
 
+	// TODO: cleanups...
+
 	if (index.column() == Priority) {
 		painter->save();
 		painter->translate(option.rect.x(), option.rect.y());
@@ -127,8 +129,17 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 
 		painter->drawText(option.rect.x()+20, option.rect.y()+((option.rect.height()+option.fontMetrics.xHeight())/2), index.model()->data(index).toString());
 	}
-	else
-		painter->drawText(option.rect.x()+5, option.rect.y()+((option.rect.height()+option.fontMetrics.xHeight())/2), index.model()->data(index).toString());
+	else {
+		int filler = 5;
+		if (index.column() == TotalTime || index.column() == SessionTime) {
+			int ow = option.fontMetrics.width(index.model()->data(index).toString());
+			filler = option.rect.width() - ow - 5;
+		}
+		painter->save();
+		painter->translate(option.rect.x(), option.rect.y());
+		painter->drawText(filler, (h+option.fontMetrics.xHeight())/2, index.model()->data(index).toString());
+		painter->restore();
+	}
 	painter->restore();
 }
 

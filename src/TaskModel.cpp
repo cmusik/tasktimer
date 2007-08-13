@@ -62,12 +62,41 @@ QVariant TaskModel::data(const QModelIndex& index, int role) const {
 		case Name:
 			return tasks->at(index.row())->name();
 		case TotalTime:
-			return QTime().addSecs(tasks->at(index.row())->totalElapsed()).toString("HH:mm:ss");
+			return timeToString(tasks->at(index.row())->totalElapsed());
 		case SessionTime:
-			return QTime().addSecs(tasks->at(index.row())->sessionElapsed()).toString("HH:mm:ss");
+			return timeToString(tasks->at(index.row())->sessionElapsed());
 	}
 	return QVariant();
 
+}
+
+QString TaskModel::timeToString(uint time) const {
+	int days = 0;
+	int hours = 0;
+	int mins = 0;
+	int secs = 0;
+
+	if (time > 86400) {
+		days = time/86400;
+		time -= days*86400;
+	}
+
+	if (time > 3600) {
+		hours = time/3600;
+		time -= hours*3600;
+	}
+
+	if (time > 60) {
+		mins = time/60;
+		time -= mins*60;
+	}
+
+	secs = time;
+
+	if (days)
+		return QString("%1d %2:%3:%4").arg(days).arg(hours, 2, 10, QChar('0')).arg(mins, 2, 10, QChar('0')).arg(secs, 2, 10, QChar('0'));
+	else
+		return QString("%1:%2:%3").arg(hours, 2, 10, QChar('0')).arg(mins, 2, 10, QChar('0')).arg(secs, 2, 10, QChar('0'));
 }
 
 void TaskModel::start(const QModelIndex& index) {

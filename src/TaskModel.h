@@ -59,6 +59,7 @@ class TaskModel : public QAbstractTableModel {
 		bool setData(const QModelIndex&, const QVariant&, int = Qt::EditRole);
 		Qt::DropActions supportedDropActions() const;
 		Qt::DropActions supportedDragActions() const;
+		QString timeToString(uint time) const;
 };
 
 #endif
