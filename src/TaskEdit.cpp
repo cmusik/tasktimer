@@ -80,16 +80,11 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 		painter->setFont(f);
 	}
 
-	float x = option.rect.x()+5;
-	float h = option.rect.height();
-	float y = option.rect.y()+((h-objectHeight)/2);
+	painter->translate(option.rect.x(), option.rect.y() );
 
-	// TODO: cleanups...
+	float h = option.rect.height();
 
 	if (index.column() == Priority) {
-		painter->save();
-		painter->translate(option.rect.x(), option.rect.y());
-
 		if (option.state & QStyle::State_Selected)
 			painter->setPen(QColor(Qt::white));
 		else
@@ -112,22 +107,21 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 			painter->drawRect(5, h-2*(barh+(barh*i)), option.rect.width()-10, barh);
 			painter->fillRect(5, h-2*(barh+(barh*i)), option.rect.width()-10, barh, QBrush(c));
 		}
-		painter->restore();
 	}
 	else if (index.column() == Name) {
+		painter->save();
+		painter->translate(5, (h-objectHeight)/2);
 		if (active) {
-			painter->save();
-			painter->translate(x, y);
 			if (option.state & QStyle::State_Selected)
 				painter->setPen(QColor(Qt::white));
 			else
 				painter->setPen(QColor(Qt::black));
 			painter->setBrush(QBrush(Qt::green));
 			painter->drawPolygon(points, 3);
-			painter->restore();
 		}
+		painter->restore();
 
-		painter->drawText(option.rect.x()+20, option.rect.y()+((option.rect.height()+option.fontMetrics.xHeight())/2), index.model()->data(index).toString());
+		painter->drawText(20, ((option.rect.height()+option.fontMetrics.xHeight())/2), index.model()->data(index).toString());
 	}
 	else {
 		int filler = 5;
@@ -135,10 +129,7 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 			int ow = option.fontMetrics.width(index.model()->data(index).toString());
 			filler = option.rect.width() - ow - 5;
 		}
-		painter->save();
-		painter->translate(option.rect.x(), option.rect.y());
 		painter->drawText(filler, (h+option.fontMetrics.xHeight())/2, index.model()->data(index).toString());
-		painter->restore();
 	}
 	painter->restore();
 }
