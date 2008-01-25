@@ -13,8 +13,10 @@ Task::Task(QString n, QObject *parent) : QObject(parent) {
 void Task::start() {
 	if (m_started)
 		stop();
-	else
+	else {
 		m_started = new QDateTime(QDateTime::currentDateTime());
+		m_done = false;
+	}
 }
 
 void Task::stop() {
