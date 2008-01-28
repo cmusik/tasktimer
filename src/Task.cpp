@@ -134,3 +134,11 @@ void Task::newSession() {
 	if (started)
 		start();
 }
+
+QString Task::note() {
+	return m_note;
+}
+
+void Task::setNote(QString note) {
+	m_note = note;
+}

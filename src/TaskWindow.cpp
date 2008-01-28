@@ -33,7 +33,7 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(checkIdle()));
 
 	connect(actionStart, SIGNAL(activated()), this, SLOT(startTask()));
-	connect(actionStop, SIGNAL(activated()), this, SLOT(stopTask()));
+	//connect(actionStop, SIGNAL(activated()), this, SLOT(stopTask()));
 
 	connect(actionStopAll, SIGNAL(activated()), m_data, SLOT(stopAll()));
 	connect(actionStopAll, SIGNAL(activated()), m_idleTimer, SLOT(stop()));
@@ -43,6 +43,7 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionDone, SIGNAL(activated()), this, SLOT(doneTask()));
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
 	connect(actionNewSession, SIGNAL(activated()), this, SLOT(startNewSession()));
+	connect(actionShowNotes, SIGNAL(activated()), this, SLOT(showNotes()));
 
 	taskTable->setSelectionModel(new QItemSelectionModel(m_filter));
 	connect(taskTable->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectionChange(const QModelIndex&)));
@@ -107,6 +108,7 @@ void TaskWindow::startTask() {
 	}
 }
 
+/*
 void TaskWindow::stopTask() {
 	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
 	if (selected.count() == 1) {
@@ -115,6 +117,7 @@ void TaskWindow::stopTask() {
 		m_data->stop(index);
 	}
 }
+*/
 
 void TaskWindow::addTask() {
 	m_data->insertRows(m_data->rowCount(QModelIndex())-1, 1);
@@ -247,3 +250,18 @@ void TaskWindow::updateStartAction(const QModelIndex& index) {
 		actionStart->setText("Start");
 	}
 }
+
+
+void TaskWindow::showNotes() {
+	QModelIndexList selected = taskTable->selectionModel()->selectedRows();
+	if (selected.count() == 1) {
+		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
+
+		Task *t = m_data->getTask(index);
+		TaskNotes *tw = new TaskNotes(this, t->note());
+		if (tw->exec()) {
+			t->setNote(tw->noteText());
+		}
+	}
+}
+

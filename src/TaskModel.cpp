@@ -3,9 +3,11 @@
 #include <unistd.h>
 #include <QTimer>
 #include <QFile>
+#include <QDir>
 #include <QTextStream>
 #include <QStringList>
 #include <QSettings>
+#include <QDateTime>
 #include "TaskModel.h"
 #include "Task.h"
 
@@ -20,6 +22,12 @@ TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
 	QTimer *savetimer = new QTimer(this);
 	connect(savetimer, SIGNAL(timeout()), this, SLOT(save()));
 	savetimer->start(60000);
+}
+
+TaskModel::~TaskModel() {
+	for(int i = 0; i < tasks->count(); ++i) {
+		start(index(i, TotalTime), true);
+	}
 }
 
 void TaskModel::updateData() {
@@ -67,7 +75,6 @@ QVariant TaskModel::data(const QModelIndex& index, int role) const {
 			return timeToString(tasks->at(index.row())->sessionElapsed());
 	}
 	return QVariant();
-
 }
 
 QString TaskModel::timeToString(uint time) const {
@@ -99,16 +106,41 @@ QString TaskModel::timeToString(uint time) const {
 		return QString("%1:%2:%3").arg(hours, 2, 10, QChar('0')).arg(mins, 2, 10, QChar('0')).arg(secs, 2, 10, QChar('0'));
 }
 
-void TaskModel::start(const QModelIndex& index) {
-	tasks->at(index.row())->start();
-	tasks->at(index.row())->setDone(false);
+void TaskModel::start(const QModelIndex& index, bool forceStop) {
+	Task *t = tasks->at(index.row());
+	QFile log (QString("/tmp/task_%1.log").arg(QString::number(index.row()+1)));
+	log.open(QIODevice::Append);
+	if (forceStop) {
+		if (t->isStarted()) {
+			t->stop();
+			log.write(QString("Stopped at %1\n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")).toAscii());
+		}
+	}
+	else {
+		if (t->isStarted()) {
+			t->stop();
+			log.write(QString("Stopped at %1\n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")).toAscii());
+		}
+		else {
+			t->start();
+			log.write(QString("Started at %1\n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")).toAscii());
+		}
+	}
+	log.close();
+	t->setDone(false);
 	emit dataChanged(this->index(0, 0), this->index(tasks->count()-1, 3));
 }
 
+/*
 void TaskModel::stop(const QModelIndex& index) {
 	tasks->at(index.row())->stop();
+  QFile log ("/tmp/log");
+  log.open(QIODevice::Append);
+  log.write("Stopped at ...\n");
+  log.close();
 	emit dataChanged(this->index(0, 0), this->index(tasks->count()-1, 3));
 }
+*/
 
 QVariant TaskModel::headerData (int section, Qt::Orientation orientation, int role) const {
 	if (role != Qt::DisplayRole)
@@ -210,6 +242,12 @@ void TaskModel::save() {
 		settings.setValue("sessionElapsed", j->sessionElapsed());
 		settings.setValue("status", j->isDone());
 		settings.setValue("priority", j->priority());
+
+		QFile file(QDir::homePath()+"/.tasktimer/"+QString("task%1").arg(QString::number(i), 4, '0'));
+		if (file.open(QIODevice::WriteOnly)) {
+			file.write(j->note().toUtf8());
+		}
+
 		settings.endGroup();
 		++i;
 	}
@@ -226,6 +264,12 @@ void TaskModel::load() {
 		j->setSessionElapsed(settings.value("sessionElapsed").toUInt());
 		j->setDone(settings.value("status").toBool());
 		j->setPriority(settings.value("priority").toInt());
+
+		QFile file(QDir::homePath()+"/.tasktimer/"+group);
+		if (file.exists() && file.open(QIODevice::ReadOnly)) {
+			j->setNote(QString(file.readAll()));
+		}
+
 		tasks->append(j);
 
 		settings.endGroup();
@@ -293,4 +337,8 @@ void TaskModel::setPriority(int value, const QModelIndex& index) {
 void TaskModel::startNewSession(const QModelIndex &index) {
 	tasks->at(index.row())->newSession();
 	emit dataChanged(this->index(0, TotalTime), this->index(tasks->count(), SessionTime));
+}
+
+Task* TaskModel::getTask(const QModelIndex &index) {
+	return tasks->at(index.row());
 }

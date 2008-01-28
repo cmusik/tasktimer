@@ -23,11 +23,12 @@ class TaskModel : public QAbstractTableModel {
 
 	public:
 		TaskModel(QObject* = 0);
+		~TaskModel();
 
 		QList<Task*> *tasks;
 
-		void start(const QModelIndex&);
-		void stop(const QModelIndex&);
+		void start(const QModelIndex&, bool = false);
+		//void stop(const QModelIndex&);
 		bool insertRows(int, int, const QModelIndex& = QModelIndex());
 		bool insertRow(int, const QModelIndex& = QModelIndex());
 		bool removeRows(int, int, const QModelIndex& = QModelIndex());
@@ -43,6 +44,7 @@ class TaskModel : public QAbstractTableModel {
 		int rowCount(const QModelIndex&) const;
 		int columnCount(const QModelIndex&) const;
 		void startNewSession(const QModelIndex&);
+		Task* getTask(const QModelIndex&);
 
 	public slots:
 		void save();

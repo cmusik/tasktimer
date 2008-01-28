@@ -99,6 +99,7 @@
    <addaction name="actionRemove" />
    <addaction name="actionDone" />
    <addaction name="actionNewSession" />
+   <addaction name="actionShowNotes" />
   </widget>
   <action name="actionExit" >
    <property name="icon" >
@@ -211,6 +212,11 @@
    </property>
    <property name="text" >
     <string>New Session</string>
+   </property>
+  </action>
+  <action name="actionShowNotes" >
+   <property name="text" >
+    <string>Show Notes</string>
    </property>
   </action>
  </widget>

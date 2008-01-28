@@ -5,6 +5,7 @@
 
 #include "TaskModel.h"
 #include "TaskFilter.h"
+#include "TaskNotes.h"
 
 #include "ui_tasktimer.h"
 
@@ -20,7 +21,7 @@ class TaskWindow : public QMainWindow, private Ui::TaskWindow {
 
 	private slots:
 		void startTask();
-		void stopTask();
+		//void stopTask();
 		void addTask();
 		void removeTask();
 		void doneTask();
@@ -28,6 +29,7 @@ class TaskWindow : public QMainWindow, private Ui::TaskWindow {
 		void setPriority(QAction*);
 		void selectionChange(const QModelIndex&);
 		void startNewSession();
+		void showNotes();
 
 	private:
 		void closeEvent(QCloseEvent *);

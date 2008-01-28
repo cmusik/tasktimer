@@ -33,6 +33,8 @@ class Task : public QObject {
 		void addTotalTime(int);
 		int priority() const;
 		void setPriority(int);
+		QString note();
+		void setNote(QString);
 
 	private:
 		uint calculateElapsedTime();
@@ -43,6 +45,7 @@ class Task : public QObject {
 		QString m_name;
 		QDateTime *m_started;
 		bool m_done;
+		QString m_note;
 };
 
 #endif
