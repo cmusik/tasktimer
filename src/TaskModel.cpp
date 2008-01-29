@@ -234,6 +234,9 @@ void TaskModel::save() {
 	QSettings settings("TaskTimer", "tasktimer");
 	settings.clear();
 
+	QDir dir(QDir::homePath());
+	dir.mkdir(".tasktimer");
+
 	int i = 0;
 	foreach(Task *j, *tasks) {
 		settings.beginGroup(QString("task%1").arg(QString::number(i), 4, '0'));
