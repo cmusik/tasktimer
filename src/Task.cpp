@@ -1,13 +1,22 @@
 #include <QDebug>
+#include <QFile>
 #include "Task.h"
+
+int Task::nextId = 0;
 
 Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_name = n;
+	m_id = nextId;
+	Task::nextId++;
 	m_totalElapsedTime = 0;
 	m_sessionElapsedTime = 0;
 	m_started = NULL;
 	m_done = false;
 	m_priority = 0;
+}
+
+Task::~Task() {
+	stop();
 }
 
 void Task::start() {
@@ -16,15 +25,19 @@ void Task::start() {
 	else {
 		m_started = new QDateTime(QDateTime::currentDateTime());
 		m_done = false;
+		logStatus(Started);
 	}
 }
 
 void Task::stop() {
-	uint ctime = calculateElapsedTime();
-	m_totalElapsedTime += ctime;
-	m_sessionElapsedTime += ctime;
-	delete m_started;
-	m_started = NULL;
+	if (m_started) {
+		uint ctime = calculateElapsedTime();
+		m_totalElapsedTime += ctime;
+		m_sessionElapsedTime += ctime;
+		delete m_started;
+		m_started = NULL;
+		logStatus(Stopped);
+	}
 }
 
 QString Task::name() const {
@@ -141,4 +154,18 @@ QString Task::note() {
 
 void Task::setNote(QString note) {
 	m_note = note;
+}
+
+void Task::logStatus(NextStatus s) {
+	QFile log (QString("/tmp/task_%1.log").arg(m_id));
+	log.open(QIODevice::Append);
+	QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+
+	if (s == Started) {
+		log.write(QString("%1 Task started\n").arg(date).arg(m_id).toAscii());
+	}
+	else {
+		log.write(QString("%1 Task stopped\n").arg(date).arg(m_id).toAscii());
+	}
+	log.close();
 }

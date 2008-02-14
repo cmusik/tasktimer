@@ -27,8 +27,7 @@ class TaskModel : public QAbstractTableModel {
 
 		QList<Task*> *tasks;
 
-		void start(const QModelIndex&, bool = false);
-		//void stop(const QModelIndex&);
+		void start(const QModelIndex&);
 		bool insertRows(int, int, const QModelIndex& = QModelIndex());
 		bool insertRow(int, const QModelIndex& = QModelIndex());
 		bool removeRows(int, int, const QModelIndex& = QModelIndex());
