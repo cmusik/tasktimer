@@ -162,10 +162,10 @@ void Task::logStatus(NextStatus s) {
 	QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
 
 	if (s == Started) {
-		log.write(QString("%1 Task started\n").arg(date).arg(m_id).toAscii());
+		log.write(QString("%1 Task started\n").arg(date).toAscii());
 	}
 	else {
-		log.write(QString("%1 Task stopped\n").arg(date).arg(m_id).toAscii());
+		log.write(QString("%1 Task stopped\n").arg(date).toAscii());
 	}
 	log.close();
 }
