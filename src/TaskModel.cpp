@@ -295,14 +295,14 @@ void TaskModel::stopAll() {
 	foreach(Task *j, *tasks) {
 		j->stop();
 	}
-	emit dataChanged(index(0, TotalTime), index(tasks->count(), SessionTime));
+	emit dataChanged(index(0, TotalTime), index(tasks->count()-1, SessionTime));
 }
 
 void TaskModel::revertActive(uint t) {
 	foreach(Task *j, *tasks) {
 			j->revert(t);
 	}
-	emit dataChanged(index(0, TotalTime), index(tasks->count(), SessionTime));
+	emit dataChanged(index(0, TotalTime), index(tasks->count()-1, SessionTime));
 }
 
 int TaskModel::priority(const QModelIndex& index) const {
@@ -315,7 +315,7 @@ void TaskModel::setPriority(int value, const QModelIndex& index) {
 
 void TaskModel::startNewSession(const QModelIndex &index) {
 	tasks->at(index.row())->newSession();
-	emit dataChanged(this->index(0, TotalTime), this->index(tasks->count(), SessionTime));
+	emit dataChanged(this->index(0, TotalTime), this->index(tasks->count()-1, SessionTime));
 }
 
 Task* TaskModel::getTask(const QModelIndex &index) {
