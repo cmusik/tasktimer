@@ -60,12 +60,10 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 
 
 	QActionGroup *priority = new QActionGroup(this);
-	priority->addAction(actionPrio0);
 	priority->addAction(actionPrio1);
 	priority->addAction(actionPrio2);
 	priority->addAction(actionPrio3);
 
-	actionPrio0->setData(0);
 	actionPrio1->setData(1);
 	actionPrio2->setData(2);
 	actionPrio3->setData(3);
@@ -74,7 +72,6 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	QAction *sep = new QAction("Priority", this);
 	sep->setSeparator(true);
 	taskTable->addAction(sep);
-	taskTable->addAction(actionPrio0);
 	taskTable->addAction(actionPrio1);
 	taskTable->addAction(actionPrio2);
 	taskTable->addAction(actionPrio3);
@@ -212,9 +209,7 @@ void TaskWindow::selectionChange(const QModelIndex &index) {
 	const QModelIndex &i = m_filter->mapToSource(index);
 
 	switch (i.model()->data(i, 34).toInt()) {
-		case 0:
-			actionPrio0->setChecked(true);
-			break;
+		default:
 		case 1:
 			actionPrio1->setChecked(true);
 			break;

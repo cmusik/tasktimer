@@ -12,7 +12,7 @@ Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_sessionElapsedTime = 0;
 	m_started = NULL;
 	m_done = false;
-	m_priority = 0;
+	m_priority = 1;
 }
 
 Task::~Task() {
