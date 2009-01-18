@@ -21,7 +21,7 @@ TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
 
 	QTimer *savetimer = new QTimer(this);
 	connect(savetimer, SIGNAL(timeout()), this, SLOT(save()));
-	savetimer->start(60000);
+	savetimer->start(6000);
 }
 
 TaskModel::~TaskModel() {
@@ -228,6 +228,7 @@ void TaskModel::save() {
 		settings.setValue("status", j->isDone());
 		settings.setValue("priority", j->priority());
 		settings.setValue("group", j->group());
+		settings.setValue("workTimes", j->getWorkTimesString());
 
 		QFile file(QDir::homePath()+"/.tasktimer/"+QString("task%1").arg(QString::number(i), 4, '0'));
 		if (file.open(QIODevice::WriteOnly)) {
@@ -251,6 +252,7 @@ void TaskModel::load() {
 		j->setDone(settings.value("status").toBool());
 		j->setPriority(settings.value("priority").toInt());
 		j->setGroup(settings.value("group").toString());
+		j->setWorkTimesString(settings.value("workTimes").toString());
 
 		QFile file(QDir::homePath()+"/.tasktimer/"+group);
 		if (file.exists() && file.open(QIODevice::ReadOnly)) {

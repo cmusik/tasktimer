@@ -2,9 +2,10 @@
 #define TASK_H
 
 #include <QObject>
-#include <QStack>
 #include <QString>
 #include <QDateTime>
+
+#include "TaskTime.h"
 
 enum NextStatus {
 	Started,
@@ -41,8 +42,10 @@ class Task : public QObject {
 		void setPriority(int);
 		QString note();
 		void setNote(QString);
-                void setGroup(QString g);
-                QString group();
+		QString group();
+		void setGroup(QString g);
+		QString getWorkTimesString();
+		void setWorkTimesString(QString);
 
 	private:
 		uint calculateElapsedTime();
@@ -54,6 +57,9 @@ class Task : public QObject {
 		int m_id;
 		QString m_name;
 		QDateTime *m_started;
+		QDateTime *m_startDate;
+		QDateTime *m_finshedDate;
+		QList<TaskTime*> *m_times;
 		QString m_group;
 		bool m_done;
 		QString m_note;

@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QFile>
+#include <QStringList>
 #include "Task.h"
 
 int Task::nextId = 0;
@@ -14,6 +15,7 @@ Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_done = false;
 	m_priority = 1;
 	m_group = "";
+	m_times = new QList<TaskTime*>();
 }
 
 Task::~Task() {
@@ -25,6 +27,7 @@ void Task::start() {
 		stop();
 	else {
 		m_started = new QDateTime(QDateTime::currentDateTime());
+		m_times->push_back(new TaskTime(Start, new QDateTime(QDateTime::currentDateTime()), this));
 		m_done = false;
 		logStatus(Started);
 	}
@@ -38,6 +41,8 @@ void Task::stop() {
 		delete m_started;
 		m_started = NULL;
 		logStatus(Stopped);
+		m_times->push_back(new TaskTime(Stop, new QDateTime(QDateTime::currentDateTime()), this));
+		qDebug() << getWorkTimesString();
 	}
 }
 
@@ -177,4 +182,32 @@ void Task::logStatus(NextStatus s) {
 		log.write(QString("%1 Task stopped\n").arg(date).toAscii());
 	}
 	log.close();
+}
+
+QString Task::getWorkTimesString() {
+	QStringList str;
+	TaskTime *t;
+	foreach(t, *m_times) {
+		str << QString::number(t->type()) << QString::number(t->time()->toTime_t());
+	}
+
+	if (t->type() != Stop) {
+		str << QString::number(Stop) << QString::number(QDateTime::currentDateTime().toTime_t());
+	}
+	return str.join(",");
+}
+
+void Task::setWorkTimesString(QString s) {
+	QStringList str = s.split(",", QString::SkipEmptyParts);
+	if (str.count() > 0) {
+		m_times->clear();
+
+		QStringListIterator strIt(str);
+
+		while (strIt.hasNext()) {
+			TaskTimeType t = (TaskTimeType) strIt.next().toInt();
+			QDateTime *d = new QDateTime(QDateTime::fromTime_t(strIt.next().toUInt()));
+			m_times->push_back(new TaskTime(t, d, this));
+		}
+	}
 }
