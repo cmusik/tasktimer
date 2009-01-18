@@ -1,0 +1,19 @@
+#!/bin/sh
+
+while true
+do
+	task=$(qdbus de.senfdax.tasktimer /TaskTimer status 2>/dev/null)
+
+	cpuspeed=`awk '/^cpu MHz/ { printf("[%4d MHz]", $4) }' /proc/cpuinfo`
+	date=`LANG=C date | awk '{ printf("[%s %s %d] [%s]", $1, $2, $3, $4) }'`
+	load="["`uptime | sed 's/.*: //; s/, /\//g'`"]"
+	load=`awk '{ printf("[%s %s %s]", $1, $2, $3); }' /proc/loadavg`
+	cputemp=`awk '{ print "[CPU " $2 ".0 C] [HDD " $4 ".0 C]" }' /proc/acpi/ibm/thermal`
+	battery=`acpi | /bin/awk '{ match($4, /^([[:digit:]]+)/, arr); printf("[%d%%]", arr[1]) }'`
+	mem=`free -m | awk '/-.+/ { printf("[MEM %3s MB]", $4); }'`
+
+	echo "${task}$date $load $mem $cputemp $cpuspeed $battery"
+	#echo "0 setstatustext $date $load $mem $cputemp $cpuspeed $battery" | awesome-client
+	#echo "1 setstatustext $date $load $mem $cputemp $cpuspeed $battery" | awesome-client
+	sleep 2
+done
