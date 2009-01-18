@@ -40,7 +40,7 @@ int TaskModel::rowCount(const QModelIndex&) const {
 }
 
 int TaskModel::columnCount(const QModelIndex&) const {
-	return 5;
+	return 6;
 }
 
 QVariant TaskModel::data(const QModelIndex& index, int role) const {
@@ -71,6 +71,8 @@ QVariant TaskModel::data(const QModelIndex& index, int role) const {
 			return timeToString(tasks->at(index.row())->totalElapsed());
 		case SessionTime:
 			return timeToString(tasks->at(index.row())->sessionElapsed());
+		case Group:
+			return tasks->at(index.row())->group();
 	}
 	return QVariant();
 }
@@ -134,6 +136,8 @@ QVariant TaskModel::headerData (int section, Qt::Orientation orientation, int ro
 				return QString("Total");
 			case SessionTime:
 				return QString("Session");
+			case Group:
+				return QString("Group");
 		}
 	}
 	else {
@@ -171,6 +175,8 @@ bool TaskModel::setData(const QModelIndex &index, const QVariant &value, int rol
 		case SessionTime:
 			tasks->at(index.row())->addSessionTime(value.toInt()*60);
 			break;
+		case Group:
+			tasks->at(index.row())->setGroup(value.toString());
 		default:
 			return false;
 	}
@@ -221,6 +227,7 @@ void TaskModel::save() {
 		settings.setValue("sessionElapsed", j->sessionElapsed());
 		settings.setValue("status", j->isDone());
 		settings.setValue("priority", j->priority());
+		settings.setValue("group", j->group());
 
 		QFile file(QDir::homePath()+"/.tasktimer/"+QString("task%1").arg(QString::number(i), 4, '0'));
 		if (file.open(QIODevice::WriteOnly)) {
@@ -243,6 +250,7 @@ void TaskModel::load() {
 		j->setSessionElapsed(settings.value("sessionElapsed").toUInt());
 		j->setDone(settings.value("status").toBool());
 		j->setPriority(settings.value("priority").toInt());
+		j->setGroup(settings.value("group").toString());
 
 		QFile file(QDir::homePath()+"/.tasktimer/"+group);
 		if (file.exists() && file.open(QIODevice::ReadOnly)) {

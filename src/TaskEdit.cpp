@@ -1,4 +1,5 @@
 #include <QLineEdit>
+#include <QComboBox>
 #include <QModelIndex>
 #include <QDebug>
 #include <QPainter>
@@ -19,10 +20,20 @@ QWidget* TaskEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 		case TotalTime:
 		case SessionTime:
 			{
-			QLineEdit *lineEdit = new QLineEdit(parent);
-			const QIntValidator *v = new QIntValidator(parent);
-			lineEdit->setValidator(v);
-			return lineEdit;
+				QLineEdit *lineEdit = new QLineEdit(parent);
+				const QIntValidator *v = new QIntValidator(parent);
+				lineEdit->setValidator(v);
+				return lineEdit;
+			}
+		case Group:
+			{
+				QComboBox *comboBox = new QComboBox(parent);
+				QString str = index.model()->data(index).toString();
+				comboBox->setEditable(true);
+				if (!m_groups.contains(str))
+					comboBox->addItem(str);
+				comboBox->addItems(m_groups);
+				return comboBox;
 			}
 		default:
 			return NULL;
@@ -30,13 +41,20 @@ QWidget* TaskEdit::createEditor(QWidget *parent, const QStyleOptionViewItem &/*o
 }
 
 void TaskEdit::setEditorData(QWidget *editor, const QModelIndex &index) const {
-
 	switch(index.column()) {
 		case Name:
 			{
 				QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
 				QString value = index.model()->data(index, Qt::DisplayRole).toString();
 				lineEdit->setText(value);
+				break;
+			}
+		case Group:
+			{
+				QComboBox *comboBox = static_cast<QComboBox*>(editor);
+				QString str = index.model()->data(index, Qt::DisplayRole).toString();
+				comboBox->setEditText(str);
+				break;
 			}
 		default:
 			return;
@@ -53,6 +71,14 @@ void TaskEdit::setModelData(QWidget *editor, QAbstractItemModel *model,
 				QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
 				QString value = lineEdit->text();
 				model->setData(index, value);
+				break;
+			}
+		case Group:
+			{
+				QComboBox *comboBox = static_cast<QComboBox*>(editor);
+				QString value = comboBox->currentText();
+				model->setData(index, value);
+				break;
 			}
 	}
 }
@@ -136,4 +162,8 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 
 QSize TaskEdit::sizeHint (const QStyleOptionViewItem &option, const QModelIndex &index) const {
 	return QItemDelegate::sizeHint(option, index);
+}
+
+void TaskEdit::addGroups(QStringList lst) {
+    m_groups = lst;
 }

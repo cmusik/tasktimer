@@ -2,6 +2,7 @@
 #define TASKEDIT_H
 
 #include <QItemDelegate>
+#include <QStringList>
 
 class TaskEdit : public QItemDelegate {
 	Q_OBJECT
@@ -17,6 +18,11 @@ class TaskEdit : public QItemDelegate {
 		void updateEditorGeometry(QWidget*, const QStyleOptionViewItem&, const QModelIndex &) const;
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
+
+		void addGroups(QStringList);
+
+	private:
+		QStringList m_groups;
 
 };
 

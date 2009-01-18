@@ -9,8 +9,9 @@ enum Columns {
 	Counter = 0,
 	Priority = 1,
 	Name = 2,
-	TotalTime = 3,
-	SessionTime = 4
+        Group = 3,
+        TotalTime = 4,
+        SessionTime = 5
 };
 
 enum Roles {

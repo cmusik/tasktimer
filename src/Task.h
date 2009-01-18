@@ -41,6 +41,8 @@ class Task : public QObject {
 		void setPriority(int);
 		QString note();
 		void setNote(QString);
+                void setGroup(QString g);
+                QString group();
 
 	private:
 		uint calculateElapsedTime();
@@ -52,6 +54,7 @@ class Task : public QObject {
 		int m_id;
 		QString m_name;
 		QDateTime *m_started;
+		QString m_group;
 		bool m_done;
 		QString m_note;
 		static int nextId;

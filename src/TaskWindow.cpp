@@ -23,6 +23,7 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	taskTable->setModel(m_filter);
 
 	TaskEdit *delegeate = new TaskEdit(this);
+	delegeate->addGroups(QStringList() << "support" << "devel" << "");
 	taskTable->setItemDelegate(delegeate);
 
 	m_screensaver = XScreenSaverAllocInfo();
@@ -55,6 +56,7 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	taskTable->horizontalHeader()->setResizeMode(Priority, QHeaderView::Fixed);
 	taskTable->horizontalHeader()->setResizeMode(TotalTime, QHeaderView::Fixed);
 	taskTable->horizontalHeader()->setResizeMode(SessionTime, QHeaderView::Fixed);
+	taskTable->horizontalHeader()->setResizeMode(Group, QHeaderView::Fixed);
 	taskTable->horizontalHeader()->setResizeMode(Name, QHeaderView::Stretch);
 	taskTable->verticalHeader()->hide();
 

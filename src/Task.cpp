@@ -13,6 +13,7 @@ Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_started = NULL;
 	m_done = false;
 	m_priority = 1;
+	m_group = "";
 }
 
 Task::~Task() {
@@ -154,6 +155,14 @@ QString Task::note() {
 
 void Task::setNote(QString note) {
 	m_note = note;
+}
+
+QString Task::group() {
+	return m_group;
+}
+
+void Task::setGroup(QString g) {
+	m_group = g;
 }
 
 void Task::logStatus(NextStatus s) {
