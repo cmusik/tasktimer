@@ -117,9 +117,11 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 			painter->setPen(QColor(Qt::black));
 
 		int barh = h/7;
-		for(int i = 0; i < priority; i++) {
+		int i = 0;
+		do {
 			QColor c;
 			switch(priority) {
+				case 0:
 				case 1:
 					c = QColor(Qt::green);
 					break;
@@ -132,7 +134,9 @@ void TaskEdit::paint (QPainter *painter, const QStyleOptionViewItem &option, con
 			}
 			painter->drawRect(5, h-2*(barh+(barh*i)), option.rect.width()-10, barh);
 			painter->fillRect(5, h-2*(barh+(barh*i)), option.rect.width()-10, barh, QBrush(c));
+			i++;
 		}
+		while (i < priority);
 	}
 	else if (index.column() == Name) {
 		painter->save();
