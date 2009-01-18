@@ -18,9 +18,12 @@ class TaskWindow : public QMainWindow, private Ui::TaskWindow {
 
 	public:
 		TaskWindow(QWidget* = 0);
+		QString status();
+
+	public slots:
+		void startTask();
 
 	private slots:
-		void startTask();
 		//void stopTask();
 		void addTask();
 		void removeTask();

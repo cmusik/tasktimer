@@ -42,7 +42,6 @@ void Task::stop() {
 		m_started = NULL;
 		logStatus(Stopped);
 		m_times->push_back(new TaskTime(Stop, new QDateTime(QDateTime::currentDateTime()), this));
-		qDebug() << getWorkTimesString();
 	}
 }
 

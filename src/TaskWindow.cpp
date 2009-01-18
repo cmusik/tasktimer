@@ -262,3 +262,6 @@ void TaskWindow::showNotes() {
 	}
 }
 
+QString TaskWindow::status() {
+	return m_data->status();
+}

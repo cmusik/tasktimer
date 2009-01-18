@@ -331,3 +331,24 @@ void TaskModel::startNewSession(const QModelIndex &index) {
 Task* TaskModel::getTask(const QModelIndex &index) {
 	return tasks->at(index.row());
 }
+
+QString TaskModel::status() {
+	QString name;
+	int started = 0;
+	foreach(Task *j, *tasks) {
+		if (j->isStarted()) {
+			name = j->name();
+			started++;
+		}
+	}
+
+	if (name.length() > 27) {
+		name = name.mid(0, 27);
+		name += "...";
+	}
+
+	if (started == 1)
+		return QString("[%1] ").arg(name);
+	else
+		return QString("[%1 active] ").arg(QString::number(started));
+}

@@ -45,6 +45,7 @@ class TaskModel : public QAbstractTableModel {
 		int columnCount(const QModelIndex&) const;
 		void startNewSession(const QModelIndex&);
 		Task* getTask(const QModelIndex&);
+		QString status();
 
 	public slots:
 		void save();

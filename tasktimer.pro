@@ -9,11 +9,12 @@ INCLUDEPATH += .
 OBJECTS_DIR = .obj
 UI_DIR = .ui
 MOC_DIR = .moc
+QT += dbus
 
 LIBS += -lXss
 
 # Input
-HEADERS += src/Task.h src/TaskWindow.h src/TaskModel.h src/TaskEdit.h src/TaskFilter.h src/TaskNotes.h src/TaskTime.h
+HEADERS += src/Task.h src/TaskWindow.h src/TaskModel.h src/TaskEdit.h src/TaskFilter.h src/TaskNotes.h src/TaskTime.h src/TaskDBus.h
 FORMS += ui/tasktimer.ui ui/tasknotes.ui
-SOURCES += src/main.cpp src/Task.cpp src/TaskWindow.cpp src/TaskModel.cpp src/TaskEdit.cpp src/TaskFilter.cpp src/TaskNotes.cpp src/TaskTime.cpp
+SOURCES += src/main.cpp src/Task.cpp src/TaskWindow.cpp src/TaskModel.cpp src/TaskEdit.cpp src/TaskFilter.cpp src/TaskNotes.cpp src/TaskTime.cpp src/TaskDBus.cpp
 RESOURCES = pics/pics.qrc
