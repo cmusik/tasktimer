@@ -13,7 +13,5 @@ do
 	mem=`free -m | awk '/-.+/ { printf("[MEM %3s MB]", $4); }'`
 
 	echo "${task}$date $load $mem $cputemp $cpuspeed $battery"
-	#echo "0 setstatustext $date $load $mem $cputemp $cpuspeed $battery" | awesome-client
-	#echo "1 setstatustext $date $load $mem $cputemp $cpuspeed $battery" | awesome-client
 	sleep 2
 done
