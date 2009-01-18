@@ -22,10 +22,6 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	m_filter->setSourceModel(m_data);
 	taskTable->setModel(m_filter);
 
-	TaskEdit *delegeate = new TaskEdit(this);
-	delegeate->addGroups(QStringList() << "support" << "devel" << "");
-	taskTable->setItemDelegate(delegeate);
-
 	m_screensaver = XScreenSaverAllocInfo();
 
 	m_idleTimer= new QTimer(this);
@@ -87,6 +83,15 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 
 	if (area)
 		addToolBar(area, toolBar);
+
+	TaskEdit *delegeate = new TaskEdit(this);
+
+	if (settings.contains("groups")) {
+		QStringList l = settings.value("groups").toStringList();
+		delegeate->addGroups(QStringList(l));
+	}
+
+	taskTable->setItemDelegate(delegeate);
 
 	connect(priority, SIGNAL(triggered(QAction*)), this, SLOT(setPriority(QAction*)));
 

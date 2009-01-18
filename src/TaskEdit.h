@@ -20,6 +20,7 @@ class TaskEdit : public QItemDelegate {
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
 
 		void addGroups(QStringList);
+		QStringList getGroups();
 
 	private:
 		QStringList m_groups;

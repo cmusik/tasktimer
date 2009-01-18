@@ -190,7 +190,7 @@ QString Task::getWorkTimesString() {
 		str << QString::number(t->type()) << QString::number(t->time()->toTime_t());
 	}
 
-	if (t->type() != Stop) {
+	if (m_times->count() > 0 && t->type() != Stop) {
 		str << QString::number(Stop) << QString::number(QDateTime::currentDateTime().toTime_t());
 	}
 	return str.join(",");

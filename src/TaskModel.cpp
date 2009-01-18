@@ -214,11 +214,12 @@ bool TaskModel::removeRow(int pos, const QModelIndex&) {
 
 void TaskModel::save() {
 	QSettings settings("TaskTimer", "tasktimer");
-	settings.clear();
+	settings.remove("tasks");
 
 	QDir dir(QDir::homePath());
 	dir.mkdir(".tasktimer");
 
+	settings.beginGroup(QString("tasks"));
 	int i = 0;
 	foreach(Task *j, *tasks) {
 		settings.beginGroup(QString("task%1").arg(QString::number(i), 4, '0'));
@@ -238,11 +239,13 @@ void TaskModel::save() {
 		settings.endGroup();
 		++i;
 	}
+	settings.endGroup();
 }
 
 void TaskModel::load() {
 	QSettings settings("TaskTimer", "tasktimer");
 
+	settings.beginGroup(QString("tasks"));
 	foreach(QString group, settings.childGroups()) {
 		settings.beginGroup(group);
 
@@ -263,6 +266,7 @@ void TaskModel::load() {
 
 		settings.endGroup();
 	}
+	settings.endGroup();
 }
 
 bool TaskModel::hasActive() const {
