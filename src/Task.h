@@ -64,6 +64,7 @@ class Task : public QObject {
 		bool m_done;
 		QString m_note;
 		static int nextId;
+		int calculateTime(QDateTime, QDateTime);
 };
 
 #endif

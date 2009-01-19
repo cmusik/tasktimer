@@ -27,7 +27,7 @@ void Task::start() {
 		stop();
 	else {
 		m_started = new QDateTime(QDateTime::currentDateTime());
-		m_times->push_back(new TaskTime(Start, new QDateTime(QDateTime::currentDateTime()), this));
+		m_times->push_back(new TaskTime(Start, new QDateTime(QDateTime::currentDateTime()), 0, this));
 		m_done = false;
 		logStatus(Started);
 	}
@@ -41,7 +41,8 @@ void Task::stop() {
 		delete m_started;
 		m_started = NULL;
 		logStatus(Stopped);
-		m_times->push_back(new TaskTime(Stop, new QDateTime(QDateTime::currentDateTime()), this));
+		m_times->push_back(new TaskTime(Stop, new QDateTime(QDateTime::currentDateTime()), 0, this));
+		calculateTime(QDateTime(),QDateTime() );
 	}
 }
 
@@ -117,8 +118,16 @@ void Task::addSessionTime(int t) {
 
 	if (t < 0 && (uint) (-t) > m_sessionElapsedTime)
 		m_sessionElapsedTime = 0;
-	else
+	else {
 		m_sessionElapsedTime += t;
+		if (m_times->count()) {
+			m_times->last()->correct(t);
+		}
+		else {
+			m_times->push_back(new TaskTime(Start, new QDateTime(QDateTime::currentDateTime()), 0, this));
+			m_times->push_back(new TaskTime(Stop, new QDateTime(QDateTime::currentDateTime()), t, this));
+		}
+	}
 
 	if (started)
 		start();
@@ -128,10 +137,19 @@ void Task::addTotalTime(int t) {
 	bool started = isStarted();
 	stop();
 
-	if (t < 0 && (uint) (-t) > m_totalElapsedTime)
+	if (t < 0 && (uint) (-t) > m_totalElapsedTime) {
 		m_totalElapsedTime = 0;
-	else
+	}
+	else {
 		m_totalElapsedTime += t;
+		if (m_times->count()) {
+			m_times->last()->correct(t);
+		}
+		else {
+			m_times->push_back(new TaskTime(Start, new QDateTime(QDateTime::currentDateTime()), 0, this));
+			m_times->push_back(new TaskTime(Stop, new QDateTime(QDateTime::currentDateTime()), t, this));
+		}
+	}
 
 	if (started)
 		start();
@@ -185,13 +203,13 @@ void Task::logStatus(NextStatus s) {
 
 QString Task::getWorkTimesString() {
 	QStringList str;
-	TaskTime *t;
+	TaskTime *t = NULL;
 	foreach(t, *m_times) {
-		str << QString::number(t->type()) << QString::number(t->time()->toTime_t());
+		str << QString::number(t->type()) << QString::number(t->time()->toTime_t()) << QString::number(t->getCorrectTime());;
 	}
 
 	if (m_times->count() > 0 && t->type() != Stop) {
-		str << QString::number(Stop) << QString::number(QDateTime::currentDateTime().toTime_t());
+		str << QString::number(Stop) << QString::number(QDateTime::currentDateTime().toTime_t()) << QString::number(0);
 	}
 	return str.join(",");
 }
@@ -206,7 +224,27 @@ void Task::setWorkTimesString(QString s) {
 		while (strIt.hasNext()) {
 			TaskTimeType t = (TaskTimeType) strIt.next().toInt();
 			QDateTime *d = new QDateTime(QDateTime::fromTime_t(strIt.next().toUInt()));
-			m_times->push_back(new TaskTime(t, d, this));
+			int c = strIt.next().toInt();
+			m_times->push_back(new TaskTime(t, d, c, this));
 		}
 	}
+}
+
+int Task::calculateTime(QDateTime from, QDateTime to) {
+	int time = 0;
+	QListIterator<TaskTime*> it(*m_times);
+
+	while (it.hasNext()) {
+		TaskTime *start = it.next();
+		TaskTime *stop = it.next();
+		if (!from.isNull() && *start->time() < from)
+			continue;
+
+		if (!to.isNull() && *stop->time() >= to)
+			continue;
+			
+			time += stop->time()->toTime_t() - start->time()->toTime_t() + start->getCorrectTime() + stop->getCorrectTime();
+	}
+	qDebug() << time;
+	return time;
 }

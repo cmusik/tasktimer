@@ -14,14 +14,17 @@ class TaskTime : public QObject {
 
 	public:
 		TaskTime(QObject* = NULL);
-		TaskTime(TaskTimeType, QDateTime*, QObject* = NULL);
+		TaskTime(TaskTimeType, QDateTime*, int=0, QObject* = NULL);
 
 		QDateTime* time();
 		TaskTimeType type();
+		void correct(int);
+		int getCorrectTime();
 
 	private:
 		TaskTimeType m_type;
 		QDateTime *m_time;
+		int m_correct;
 };
 
 
