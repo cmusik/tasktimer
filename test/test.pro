@@ -9,5 +9,5 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += ../src/Task.h
-SOURCES += testtask.cpp ../src/Task.cpp
+HEADERS += ../src/Task.h ../src/TaskTime.h
+SOURCES += testtask.cpp ../src/Task.cpp ../src/TaskTime.cpp

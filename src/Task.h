@@ -46,6 +46,7 @@ class Task : public QObject {
 		void setGroup(QString g);
 		QString getWorkTimesString();
 		void setWorkTimesString(QString);
+		int calculateTime(QDateTime, QDateTime);
 
 	private:
 		uint calculateElapsedTime();
@@ -64,7 +65,6 @@ class Task : public QObject {
 		bool m_done;
 		QString m_note;
 		static int nextId;
-		int calculateTime(QDateTime, QDateTime);
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include <QtTest/QtTest>
 #include <QDebug>
 #include "../src/Task.h"
+#include "../src/TaskTime.h"
 
 class TestTask: public QObject {
 	Q_OBJECT
@@ -68,12 +69,20 @@ void TestTask::testStart() {
 	m_task->stop();
 	QVERIFY(m_task->totalElapsed() == 6);
 	QVERIFY(m_task->sessionElapsed() == 3);
+
+	QVERIFY(m_task->calculateTime(QDateTime(), QDateTime()) == 6);
 }
 
 void TestTask::testPriority() {
-	QVERIFY(m_task->priority() == 0);
-	m_task->setPriority(1);
 	QVERIFY(m_task->priority() == 1);
+	m_task->setPriority(0);
+	QVERIFY(m_task->priority() == 1);
+	m_task->setPriority(2);
+	QVERIFY(m_task->priority() == 2);
+	m_task->setPriority(3);
+	QVERIFY(m_task->priority() == 3);
+	m_task->setPriority(4);
+	QVERIFY(m_task->priority() == 3);
 }
 
 int main (int args, char *argv[]) {

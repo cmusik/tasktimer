@@ -160,7 +160,8 @@ int Task::priority() const {
 }
 
 void Task::setPriority(int p) {
-	m_priority = p;
+	if (p > 0 && p <= 3)
+		m_priority = p;
 }
 
 void Task::newSession() {
@@ -245,6 +246,5 @@ int Task::calculateTime(QDateTime from, QDateTime to) {
 			
 			time += stop->time()->toTime_t() - start->time()->toTime_t() + start->getCorrectTime() + stop->getCorrectTime();
 	}
-	qDebug() << time;
 	return time;
 }
