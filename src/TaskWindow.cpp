@@ -11,7 +11,7 @@
 #include <QSettings>
 
 #include "TaskWindow.h"
-#include "TaskEdit.h"
+#include "TaskSettings.h"
 
 TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	setupUi(this);
@@ -41,6 +41,7 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(actionHideDone, SIGNAL(triggered(bool)), m_filter, SLOT(filterDone(bool)));
 	connect(actionNewSession, SIGNAL(activated()), this, SLOT(startNewSession()));
 	connect(actionShowNotes, SIGNAL(activated()), this, SLOT(showNotes()));
+	connect(actionSettings, SIGNAL(activated()), this, SLOT(showSettings()));
 
 	taskTable->setSelectionModel(new QItemSelectionModel(m_filter));
 	connect(taskTable->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectionChange(const QModelIndex&)));
@@ -84,14 +85,14 @@ TaskWindow::TaskWindow(QWidget *parent) : QMainWindow(parent) {
 	if (area)
 		addToolBar(area, toolBar);
 
-	TaskEdit *delegeate = new TaskEdit(this);
+	m_delegeate = new TaskEdit(this);
 
 	if (settings.contains("groups")) {
 		QStringList l = settings.value("groups").toStringList();
-		delegeate->addGroups(QStringList(l));
+		m_delegeate->setGroups(QStringList(l));
 	}
 
-	taskTable->setItemDelegate(delegeate);
+	taskTable->setItemDelegate(m_delegeate);
 
 	connect(priority, SIGNAL(triggered(QAction*)), this, SLOT(setPriority(QAction*)));
 
@@ -165,6 +166,7 @@ void TaskWindow::closeEvent(QCloseEvent *event) {
 	QSettings settings("TaskTimer", "tasktimer");
 	settings.setValue("hide_done", actionHideDone->isChecked());
 	settings.setValue("toolbar_pos", toolBarArea(toolBar));
+	settings.setValue("groups", m_delegeate->getGroups());
 
 	event->accept();
 }
@@ -269,4 +271,12 @@ void TaskWindow::showNotes() {
 
 QString TaskWindow::status() {
 	return m_data->status();
+}
+
+void TaskWindow::showSettings() {
+	TaskSettings s;
+	s.addGroups(m_delegeate->getGroups());
+	if (s.exec() == QDialog::Accepted) {
+		m_delegeate->setGroups(s.getGroups());
+	}
 }

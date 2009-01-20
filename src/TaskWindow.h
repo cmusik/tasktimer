@@ -6,6 +6,7 @@
 #include "TaskModel.h"
 #include "TaskFilter.h"
 #include "TaskNotes.h"
+#include "TaskEdit.h"
 
 #include "ui_tasktimer.h"
 
@@ -33,12 +34,14 @@ class TaskWindow : public QMainWindow, private Ui::TaskWindow {
 		void selectionChange(const QModelIndex&);
 		void startNewSession();
 		void showNotes();
+		void showSettings();
 
 	private:
 		void closeEvent(QCloseEvent *);
 		void updateStartAction(const QModelIndex&);
 
 		TaskModel *m_data;
+		TaskEdit *m_delegeate;
 		TaskFilter *m_filter;
 		XScreenSaverInfo *m_screensaver;
 		QTimer *m_idleTimer;

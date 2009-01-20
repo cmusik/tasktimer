@@ -51,6 +51,7 @@
     <property name="title" >
      <string>File</string>
     </property>
+    <addaction name="actionSettings" />
     <addaction name="actionExit" />
    </widget>
    <widget class="QMenu" name="menuView" >
@@ -216,6 +217,11 @@
   <action name="actionShowNotes" >
    <property name="text" >
     <string>Show Notes</string>
+   </property>
+  </action>
+  <action name="actionSettings" >
+   <property name="text" >
+    <string>Settings</string>
    </property>
   </action>
  </widget>

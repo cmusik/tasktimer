@@ -19,7 +19,7 @@ class TaskEdit : public QItemDelegate {
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
 
-		void addGroups(QStringList);
+		void setGroups(QStringList);
 		QStringList getGroups();
 
 	private:

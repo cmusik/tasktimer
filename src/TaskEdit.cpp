@@ -168,7 +168,7 @@ QSize TaskEdit::sizeHint (const QStyleOptionViewItem &option, const QModelIndex 
 	return QItemDelegate::sizeHint(option, index);
 }
 
-void TaskEdit::addGroups(QStringList lst) {
+void TaskEdit::setGroups(QStringList lst) {
     m_groups = lst;
 }
 
