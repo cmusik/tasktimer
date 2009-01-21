@@ -31,8 +31,10 @@ void TestTask::cleanup() {
 
 void TestTask::testDone() {
 	QVERIFY(m_task->isDone() == false);
-	m_task->setDone(true);
+	QDateTime d = QDateTime::currentDateTime();
+	m_task->setDone(d);
 	QVERIFY(m_task->isDone() == true);
+	QVERIFY(m_task->dateFinished() == d);
 
 	m_task->start();
 	m_task->stop();

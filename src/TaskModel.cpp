@@ -116,7 +116,7 @@ void TaskModel::start(const QModelIndex& index) {
 		t->start();
 	}
 
-	t->setDone(false);
+	t->setDone(QDateTime());
 	emit dataChanged(this->index(0, 0), this->index(tasks->count()-1, 3));
 }
 
@@ -153,7 +153,6 @@ Qt::ItemFlags TaskModel::flags(const QModelIndex& index) const {
 	if (index.isValid())
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 	else {
-	qDebug() << index;
 		return Qt::ItemIsDropEnabled | defaultFlags;
 	}
 
@@ -226,7 +225,8 @@ void TaskModel::save() {
 		settings.setValue("name", j->name());
 		settings.setValue("totalElapsed", j->totalElapsed());
 		settings.setValue("sessionElapsed", j->sessionElapsed());
-		settings.setValue("status", j->isDone());
+		settings.setValue("finishDate", QVariant(j->dateFinished()));
+		settings.setValue("createDate", j->dateCreated());
 		settings.setValue("priority", j->priority());
 		settings.setValue("group", j->group());
 		settings.setValue("workTimes", j->getWorkTimesString());
@@ -252,7 +252,8 @@ void TaskModel::load() {
 		Task *j = new Task(settings.value("name").toString(), this);
 		j->setTotalElapsed(settings.value("totalElapsed").toUInt());
 		j->setSessionElapsed(settings.value("sessionElapsed").toUInt());
-		j->setDone(settings.value("status").toBool());
+		j->setDateFinished(settings.value("finishDate").toDateTime());
+		j->setDateCreated(settings.value("createDate").toDateTime());
 		j->setPriority(settings.value("priority").toInt());
 		j->setGroup(settings.value("group").toString());
 		j->setWorkTimesString(settings.value("workTimes").toString());
@@ -297,7 +298,11 @@ bool TaskModel::isDone(const QModelIndex &index) const {
 
 void TaskModel::setDone(bool d, const QModelIndex &index) {
 	tasks->at(index.row())->stop();
-	tasks->at(index.row())->setDone(d);
+	if (d)
+		tasks->at(index.row())->setDone();
+	else
+		tasks->at(index.row())->setDone(QDateTime());
+
 	emit dataChanged(createIndex(0, 0), createIndex(2, tasks->count()-1));
 }
 

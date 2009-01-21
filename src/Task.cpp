@@ -12,10 +12,10 @@ Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_totalElapsedTime = 0;
 	m_sessionElapsedTime = 0;
 	m_started = NULL;
-	m_done = false;
 	m_priority = 1;
 	m_group = "";
 	m_times = new QList<TaskTime*>();
+	m_dateCreated = QDateTime(QDateTime::currentDateTime());
 }
 
 Task::~Task() {
@@ -28,7 +28,7 @@ void Task::start() {
 	else {
 		m_started = new QDateTime(QDateTime::currentDateTime());
 		m_times->push_back(new TaskTime(Start, new QDateTime(QDateTime::currentDateTime()), 0, this));
-		m_done = false;
+		m_dateFinished = QDateTime();
 		logStatus(Started);
 	}
 }
@@ -91,11 +91,11 @@ bool Task::isStarted() const {
 }
 
 bool Task::isDone() const {
-	return m_done;
+	return m_dateFinished.isValid();
 }
 
-void Task::setDone(bool d) {
-	m_done = d;
+void Task::setDone(QDateTime d) {
+	m_dateFinished = QDateTime(d);
 }
 
 void Task::revert(uint t) {
@@ -247,4 +247,20 @@ int Task::calculateTime(QDateTime from, QDateTime to) {
 			time += stop->time()->toTime_t() - start->time()->toTime_t() + start->getCorrectTime() + stop->getCorrectTime();
 	}
 	return time;
+}
+
+void Task::setDateCreated(QDateTime d) {
+	m_dateCreated = d;
+}
+
+void Task::setDateFinished(QDateTime d) {
+	m_dateFinished = d;
+}
+
+QDateTime Task::dateCreated() {
+	return m_dateCreated;
+}
+
+QDateTime Task::dateFinished() {
+	return m_dateFinished;
 }

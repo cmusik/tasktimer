@@ -34,7 +34,7 @@ class Task : public QObject {
 
 		bool isStarted() const;
 		bool isDone() const;
-		void setDone(bool);
+		void setDone(QDateTime = QDateTime(QDateTime::currentDateTime()));
 		void revert(uint);
 		void addSessionTime(int);
 		void addTotalTime(int);
@@ -47,6 +47,10 @@ class Task : public QObject {
 		QString getWorkTimesString();
 		void setWorkTimesString(QString);
 		int calculateTime(QDateTime, QDateTime);
+		QDateTime dateCreated();
+		void setDateCreated(QDateTime);
+		QDateTime dateFinished();
+		void setDateFinished(QDateTime);
 
 	private:
 		uint calculateElapsedTime();
@@ -58,11 +62,10 @@ class Task : public QObject {
 		int m_id;
 		QString m_name;
 		QDateTime *m_started;
-		QDateTime *m_startDate;
-		QDateTime *m_finshedDate;
+		QDateTime m_dateCreated;
+		QDateTime m_dateFinished;
 		QList<TaskTime*> *m_times;
 		QString m_group;
-		bool m_done;
 		QString m_note;
 		static int nextId;
 };
