@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Dialog</string>
+   <string>TaskTimer - Settings</string>
   </property>
   <property name="modal" >
    <bool>true</bool>
@@ -21,68 +21,83 @@
      <property name="title" >
       <string>Groups</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3" >
+     <layout class="QHBoxLayout" name="horizontalLayout" >
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3" >
+       <layout class="QVBoxLayout" name="verticalLayout_3" >
         <item>
          <widget class="QLineEdit" name="lineGroup" />
         </item>
         <item>
+         <widget class="QListWidget" name="lstGroups" />
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout" >
+        <item>
          <widget class="QPushButton" name="btnAdd" >
-          <property name="text" >
-           <string>Add</string>
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="icon" >
+           <iconset resource="../pics/pics.qrc" >
+            <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
           </property>
           <property name="default" >
            <bool>true</bool>
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout" >
         <item>
-         <widget class="QListWidget" name="lstGroups" />
+         <widget class="QPushButton" name="btnUp" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="icon" >
+           <iconset resource="../pics/pics.qrc" >
+            <normaloff>:/icons/arrow-up.png</normaloff>:/icons/arrow-up.png</iconset>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout" >
-          <item>
-           <widget class="QPushButton" name="btnUp" >
-            <property name="text" >
-             <string>Up</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer" >
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnDown" >
-            <property name="text" >
-             <string>Down</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <spacer name="verticalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>27</width>
+            <height>38</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnDown" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="icon" >
+           <iconset resource="../pics/pics.qrc" >
+            <normaloff>:/icons/arrow-down.png</normaloff>:/icons/arrow-down.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRemove" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+          <property name="icon" >
+           <iconset resource="../pics/pics.qrc" >
+            <normaloff>:/icons/list-remove.png</normaloff>:/icons/list-remove.png</iconset>
+          </property>
+         </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnRemove" >
-        <property name="text" >
-         <string>Remove</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
@@ -99,7 +114,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../pics/pics.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

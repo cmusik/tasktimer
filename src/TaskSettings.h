@@ -11,14 +11,16 @@ class TaskSettings : public QDialog, private Ui::TaskSettings {
 
 	public:
 		TaskSettings(QWidget* = 0);
-		void addGroups(QStringList);
-		QStringList getGroups();
+		void groupAdd(QStringList);
+		QStringList groupGet();
 
 	private slots:
-		void addGroup();
-		void removeGroup();
-		void moveGroupUp();
-		void moveGroupDown();
+		void groupAdd();
+		void groupRemove();
+		void groupMoveUp();
+		void groupMoveDown();
+		void groupRowChanged(int);
+		void groupLineChanged(QString);
 };
 
 #endif

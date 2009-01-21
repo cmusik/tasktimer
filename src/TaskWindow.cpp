@@ -275,8 +275,8 @@ QString TaskWindow::status() {
 
 void TaskWindow::showSettings() {
 	TaskSettings s;
-	s.addGroups(m_delegeate->getGroups());
+	s.groupAdd(m_delegeate->getGroups());
 	if (s.exec() == QDialog::Accepted) {
-		m_delegeate->setGroups(s.getGroups());
+		m_delegeate->setGroups(s.groupGet());
 	}
 }
