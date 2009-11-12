@@ -231,10 +231,13 @@ void TaskModel::save() {
 		settings.setValue("group", j->group());
 		settings.setValue("workTimes", j->getWorkTimesString());
 
-		QFile file(QDir::homePath()+"/.tasktimer/"+QString("task%1").arg(QString::number(i), 4, '0'));
-		if (file.open(QIODevice::WriteOnly)) {
-			file.write(j->note().toUtf8());
-		}
+        if (!j->isSaved()) {
+            QFile file(QDir::homePath()+"/.tasktimer/"+QString("task%1").arg(QString::number(i), 4, '0'));
+            if (file.open(QIODevice::WriteOnly)) {
+                file.write(j->note().toUtf8());
+            }
+            j->markSaved();
+        }
 
 		settings.endGroup();
 		++i;
@@ -263,6 +266,7 @@ void TaskModel::load() {
 			j->setNote(QString(file.readAll()));
 		}
 
+        j->markSaved();
 		tasks->append(j);
 
 		settings.endGroup();

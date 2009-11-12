@@ -51,6 +51,8 @@ class Task : public QObject {
 		void setDateCreated(QDateTime);
 		QDateTime dateFinished();
 		void setDateFinished(QDateTime);
+        bool isSaved();
+        void markSaved();
 
 	private:
 		uint calculateElapsedTime();
@@ -67,6 +69,7 @@ class Task : public QObject {
 		QList<TaskTime*> *m_times;
 		QString m_group;
 		QString m_note;
+        bool m_saved;
 		static int nextId;
 };
 

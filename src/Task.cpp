@@ -16,6 +16,7 @@ Task::Task(QString n, QObject *parent) : QObject(parent) {
 	m_group = "";
 	m_times = new QList<TaskTime*>();
 	m_dateCreated = QDateTime(QDateTime::currentDateTime());
+    m_saved = true;
 }
 
 Task::~Task() {
@@ -31,6 +32,7 @@ void Task::start() {
 		m_dateFinished = QDateTime();
 		logStatus(Started);
 	}
+    m_saved = false;
 }
 
 void Task::stop() {
@@ -52,6 +54,7 @@ QString Task::name() const {
 
 void Task::setName(QString n) {
 	m_name = n;
+    m_saved = false;
 }
 
 uint Task::calculateElapsedTime() {
@@ -77,10 +80,12 @@ uint Task::sessionElapsed() {
 
 void Task::setTotalElapsed(uint t) {
 	m_totalElapsedTime = t;
+    m_saved = false;
 }
 
 void Task::setSessionElapsed(uint t) {
 	m_sessionElapsedTime = t;
+    m_saved = false;
 }
 
 bool Task::isStarted() const {
@@ -96,6 +101,7 @@ bool Task::isDone() const {
 
 void Task::setDone(QDateTime d) {
 	m_dateFinished = QDateTime(d);
+    m_saved = false;
 }
 
 void Task::revert(uint t) {
@@ -131,6 +137,8 @@ void Task::addSessionTime(int t) {
 
 	if (started)
 		start();
+
+    m_saved = false;
 }
 
 void Task::addTotalTime(int t) {
@@ -162,6 +170,8 @@ int Task::priority() const {
 void Task::setPriority(int p) {
 	if (p > 0 && p <= 3)
 		m_priority = p;
+
+    m_saved = false;
 }
 
 void Task::newSession() {
@@ -178,6 +188,8 @@ QString Task::note() {
 
 void Task::setNote(QString note) {
 	m_note = note;
+
+    m_saved = false;
 }
 
 QString Task::group() {
@@ -186,6 +198,8 @@ QString Task::group() {
 
 void Task::setGroup(QString g) {
 	m_group = g;
+
+    m_saved = false;
 }
 
 void Task::logStatus(NextStatus s) {
@@ -251,10 +265,12 @@ int Task::calculateTime(QDateTime from, QDateTime to) {
 
 void Task::setDateCreated(QDateTime d) {
 	m_dateCreated = d;
+    m_saved = false;
 }
 
 void Task::setDateFinished(QDateTime d) {
 	m_dateFinished = d;
+    m_saved = false;
 }
 
 QDateTime Task::dateCreated() {
@@ -263,4 +279,12 @@ QDateTime Task::dateCreated() {
 
 QDateTime Task::dateFinished() {
 	return m_dateFinished;
+}
+
+bool Task::isSaved() {
+    return m_saved;
+}
+
+void Task::markSaved() {
+    m_saved = true;
 }
