@@ -105,10 +105,15 @@ void TaskWindow::startTask() {
 		const QModelIndex &index = m_filter->mapToSource(selected.at(0));
 
 		m_data->start(index);
-		if (m_data->hasActive())
+		if (m_data->hasActive()) {
+			setWindowTitle(QString("TaskTimer %1").arg(m_data->status()));
 			m_idleTimer->start();
-		else
+		}
+		else {
+			setWindowTitle(QString("TaskTimer"));
 			m_idleTimer->stop();
+		}
+
 		updateStartAction(index);
 	}
 }
