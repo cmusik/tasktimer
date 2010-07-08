@@ -21,7 +21,7 @@ TaskModel::TaskModel(QObject *parent) : QAbstractTableModel(parent) {
 
 	QTimer *savetimer = new QTimer(this);
 	connect(savetimer, SIGNAL(timeout()), this, SLOT(save()));
-	savetimer->start(6000);
+	savetimer->start(60000);
 }
 
 TaskModel::~TaskModel() {
